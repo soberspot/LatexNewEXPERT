@@ -1,0 +1,386 @@
+% example-image
+
+\renewcommand{\chaptername}{Заключение эксперта}
+\renewcommand{\refname}{Список}
+\renewcommand{\bibname}{\large {Использованные нормативы и источники информации}}
+
+\renewcommand{\epsilon}{\ensuremath{\varepsilon}}
+\renewcommand{\phi}{\ensuremath{\varphi}}
+\renewcommand{\kappa}{\ensuremath{\varkappa}}
+\renewcommand{\le}{\ensuremath{\leqslant}}
+\renewcommand{\leq}{\ensuremath{\leqslant}}
+\renewcommand{\ge}{\ensuremath{\geqslant}}
+\renewcommand{\geq}{\ensuremath{\geqslant}}
+\renewcommand{\emptyset}{\varnothing}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%   ПРОИЗВОЛЬНЫЙ СЧЕТЧИК
+\newcounter{@nnnn}  % задаём имя счёчика 
+\setcounter{@nnnn}{0}  % устанавливаем его первое значение
+
+\newcommand{\пп}{\stepcounter{@nnnn}%
+	\arabic{@nnnn}}
+
+
+
+\newcounter{@nnn}  % задаём имя счёчика 
+\setcounter{@nnn}{0}  % устанавливаем его первое значение
+
+\newcommand{\z}[2]{\par\addtocounter{@nnn}{1}  % формируем комманду 
+	{\bf \arabic{@nnn}.   Работы по заказ-наряду  #1, произведеные на автомобиле #2:}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%  Подсчет строк в таблице
+\newcounter{rownum}
+\setcounter{rownum}{0}
+\newcommand{\Rownum}{\stepcounter{rownum}%
+\arabic{rownum}}
+
+%\def\contentsname{Содержание}
+%Аннотация  \abstractname
+%Часть       \partname
+%Глава        \chaptername
+%Список литературы  \refname
+%Рис.                \figurename
+%Таблица           \tablename
+%Литература       \bibname
+
+%Предметный указатель  \indexname
+%Приложение                \appendixname
+%Содержание          \contentsname
+%Список иллюстраций \listfigurename
+%Список таблиц        \listtablename
+%\addto\captionsrussian{\def\refname{Список используемой литературы}}
+
+%%%%%%%%%%%%%%   Размещение изображений
+%\textfloatsep — расстояние между флоатс (в верхней или нижней части страницы) и текстом (по умолчанию, около 20pt)
+%\floatsep — вертикальное расстояние между двумя флоатс (около 12pt)
+%\intextsep — расстояние между флоатс вставленным "прямо здесь" (параметр h) и текстом (около 12pt)
+%\abovecaptionskip и \belowcaptionskip — расстояние над и под подписью к флоат
+\setcounter{totalnumber}{10}
+\setcounter{topnumber}{10}
+\renewcommand{\topfraction}{1}
+\renewcommand{\textfraction}{0}
+%%%%%%  Больше плавающих объектов на страницу
+ \setlength{\textfloatsep}{10pt plus 1.0pt minus 2.0pt}
+ \setlength{\floatsep}{5pt plus 1.0pt minus 1.0pt}
+ \setlength{\intextsep}{5pt plus 1.0pt minus 1.0pt}
+ 
+  
+ %%%%%%%%%%%%%%%%   Число прописью
+ \newcommand{\числопрописью}[1]
+ {
+ 	\numnameru{#1}
+ }
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%   Заметка на полях  (ремарка)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\rem}[1]
+{
+\marginpar{\scriptsize\textcolor{red}{#1}}
+}
+\newcommand{\рем}[1]
+{
+	\marginpar{\scriptsize\textcolor{red}{#1}}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% ПЕРЕОПРЕДЕЛЕНИЕ ФОРМАТИРОВАНИЯ ЯЧЕЕК ТАБЛИЦЫ%%%%%%%%%%
+%
+\newcolumntype{P}[1]{>{\centering\arraybackslash}p{#1}}   %  \centering   \raggedleft  \raggedright
+\newcolumntype{M}[1]{>{\raggedright\arraybackslash}m{#1}} %
+\newcolumntype{G}[1]{>{\centering\arraybackslash}m{#1}} %
+
+%%%%%%%%%%%% ВСАВКА с масштабированием ИЗОБРАЖЕНИЯ 2х3  В ТАБЛИЦУ
+\newcommand{\imt}[1]
+{\includegraphics[width=62mm, height=42mm, keepaspectratio=false]{#1}}
+
+%%%% Переопределение команды для
+%  Её вызов — \imgh{45.25mm}{zb}{Пример}
+%  Первый параметр — ширина
+%  Второй параметр — название файла
+%  Третий параметр — название подписи к изображению
+\newcommand{\imgh}[3]
+{
+	\begin{figure}[hpt!]
+		\center{\includegraphics[width=#1]{#2}}
+		\caption{\small {#3}}
+		\label{ris:#2}
+	\end{figure}
+}
+
+
+\newcommand{\imgroot}[4]
+{
+	\begin{figure}[hpt!]
+		\center{\includegraphics[angle=#4,width=#1]{#2}}
+		\caption{\small {#3}}
+		\label{ris:#2}
+	\end{figure}
+}
+
+%%Собственный  простейший список без нумерации и с обычными межстрочными интервалами
+\newenvironment{compactlist}{
+    \begin{list}{{$\bullet$}}{
+            \setlength\partopsep{0pt}
+            \setlength\parskip{0pt}
+            \setlength\parsep{0pt}
+            \setlength\topsep{0pt}
+            \setlength\itemsep{0pt}
+            \setlength{\itemindent}{\leftmargin}
+            \setlength{\leftmargin}{0pt}
+        }
+    }{
+    \end{list}
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%% ПЕРЕОПРЕДЕЛЕНИЕ ДЛЯ ЗАПИСИ СТРОКИ АКТА ОСМОТРА
+%%
+
+\newcommand{\акт}[4]{\Rownum  & {\small #1}& #2  & #3 & #4\\  \toprule}
+
+%%%%%%%%%%%%%%%
+%% Переопределение для ЗАКЛЮЧЕНИЯ. Таблица ввода повреждений  с фото
+
+\newcommand{\пов}[2]{\Rownum  & {\small #1 }&  \imt{#2}\\ \hline \toprule}
+
+%%%%%%%%%%%%%%%%
+%%%  Переопределение длятаблицы ИСТОРИИ РЕМОНТА и сервисного обслуживания
+
+\newcommand{\ист}[5]{#1 & #2  & #2 & #4   & #5 \\ \hline}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% ПЕРЕОПРЕДЕЛЕНИЕ ДЛЯ ТАБЛИЦЫ с Игдексом и Двумя Столбцами
+
+\newcommand{\два}[2]{\small \Rownum  & {\small #1 }&  \small #2\\ \hline \toprule}
+
+%%% ПЕРЕОПРЕДЕЛЕНИЕ ДЛЯ ТАБЛИЦЫ с Индексом и Пятью Столбцами
+
+\newcommand{\пять}[5]{\small \Rownum  & \small #1 &  \small #2&\small #3&\small #4&\small #5\\ \hline \toprule}
+
+
+
+%%% ПЕРЕОПРЕДЕЛЕНИЕ ДЛЯ ТАБЛИЦЫ без индекса  и тремя Столбцами
+
+\newcommand{\три}[3]{& \small #1 & \small #2 & \small #3\\ \hline \toprule}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\dee}{
+	% вертикальные промежутки:
+	\topsep=0pt % вокруг списка
+	\parsep=0pt % между абзацами
+	\itemsep=0pt % между пунктами % горизонтальные промежутки: \itemindent=0pt % абзацный выступ
+	\labelsep=1ex % расстояние до метки
+	\leftmargin=\parindent % отступ слева
+	\rightmargin=0pt} % отступ справа
+%%
+
+%%%%%%%%%%%% Нумерованный список
+\newcommand{\be}{\begin{enumerate}}
+\newcommand{\en}{\end{enumerate}}
+
+%%%% Вставить цитату
+\newcommand{\цитата}[1]
+{
+	\begin{quote}
+		\textcolor{gray}{#1}
+	\end{quote}
+}
+
+\newcommand{\блеклый}[1]
+{\textcolor{gray}{#1}[0.7]}
+
+\newcommand{\сноска}[1]{\footnote{#1}}
+
+\newcommand{\икс}{$x$}
+\newcommand{\игрек}{$y$}
+\newcommand{\зет}{$z$}
+\newcommand{\audaОСАГО}{Audatex AudaWeb, в модуле ОСАГО ПРО}
+\newcommand{\auda}{Audatex AudaWeb}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%% ЧЕК БОКСЫ
+\newcommand{\cmark}{\ding{51}}%$\checkmark $
+\newcommand{\xmark}{\ding{55}}%
+\newcommand{\done}{{$\square$}{\hspace{-6.5pt}\cmark}}
+\newcommand{\wontfix}{{$\square$}{\hspace{-6.5pt}\xmark}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\г}{$\checkmark $}
+\newcommand{\7}{$\checkmark $}
+\newcommand{\галка}{\ding{51}}
+\newcommand{\х}{\ding{55}}
+\newcommand{\градус}{\circ}
+\newcommand{\чек}{$\square$}
+
+\newcommand{\чекг}{\done}
+\newcommand{\чекх}{\wontfix}
+
+
+% Площадь пореждений, М2
+\newcommand{\s}[1]{$S_{\text{повр}} \approx#1\, m^2$}
+
+\newcommand{\угол}[1]{$ #1^\circ $}
+%%%% Стиль для колонтитулов
+
+\newcommand{\грз}{\grz}
+\newcommand{\вин}{\vin}
+\newcommand{\датадтп}{\datadtp}
+\newcommand{\датадоговора}{\dog}
+\newcommand{\начато}{\datastart}
+\newcommand{\датаосмотра}{\osm}
+\newcommand{\датазаключения}{\zkl}
+\newcommand{\страховойполис}{\polis}
+\newcommand{\протокол}{\pr}
+\newcommand{\повреждения}{\pov}
+\newcommand{\иск}{\isk}
+\newcommand{\тс}{\tc}
+\newcommand{\окончено}{\dataend}
+\newcommand{\прибл}{$ \approx $}
+\newcommand{\тса}{\tca}
+\newcommand{\тсб}{\tcb}
+\newcommand{\ссылка}{\ref}
+%\newcommand{}{}
+
+%%%%%%%%%%%%%%%% ПЕРЕОПРЕДЕЛЕНИЕ  "По вопросу"     \повопросу{вопрос}
+\newcommand{\повопросу}[1]{\,{\renewcommand\baselinestretch{0.86}\small\normalsize
+\subsection{\underline{По  вопросу}\,\,\textbf{\small{<<#1>>}}}}
+\renewcommand\baselinestretch{1.2}\small\normalsize}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\newcommand{\фото}[2]
+{
+    \begin{figure}[H]
+        \center{\includegraphics[width=0.99\textwidth]{#1}}
+        \caption{\small {#2}}
+        \label{рис:#1}
+    \end{figure}
+}
+
+
+
+\newcommand{\фотоб}[2]
+{
+	\begin{figure}[H]
+		\center{\includegraphics[width=0.99\textwidth]{#1}}
+		\caption*{\small {#2}}
+		\label{рис:#1}
+	\end{figure}
+}
+
+
+
+\newcommand{\фот}[2]
+{
+	\begin{figure}[H]
+		\center{\includegraphics[width=0.99\textwidth]{#1}}
+		\caption{\small {#2}}
+	%	\label{рис:#1}
+	\end{figure}
+}
+
+%%%%%%%%%%%%%%% ДВА РИСУНКА РЯДОМ            \дварядом{файл1}{подпись1}{файл2}{подпись2}
+\newcommand{\дварядом}[4]{\begin{figure}[H]\centering
+        \parbox[t]{0.49\textwidth}
+        {\centering
+            \includegraphics[width=.49\textwidth,  height=.32\textwidth]{#1}
+            \caption{\footnotesize {#2}}
+            \label{рис:#1}}
+        \hfil \hfil
+        \parbox[t]{0.49\textwidth}
+        {\centering
+            \includegraphics[width=.49\textwidth, height=.32\textwidth]{#3}
+            \caption{\footnotesize {#4}}
+            \label{рис:#3}}
+
+\end{figure}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Два рядом с одной общей подписью
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\дварисунка}[5]{\begin{figure}[H]
+	\begin{minipage}{0.49\textwidth}
+		\includegraphics[width=\linewidth,  height=.64\linewidth]{#1}
+		\subcaption{#2}
+	\end{minipage}
+	\hfill
+	\begin{minipage}{0.49\textwidth}
+		\includegraphics[width=\linewidth,  height=.64\linewidth]{#3}
+		\subcaption{#4}
+	\end{minipage}
+
+	\caption{#5}
+	\label{рис:#1}
+:\end{figure}}
+
+
+
+
+
+%%%% СТС две стороны рядом
+\newcommand{\стс}[4]{\begin{figure}[H]
+    \centering
+    \parbox[t]{0.49\textwidth}
+    {\centering
+        \includegraphics[width=.49\textwidth,  height=1.45\linewidth]{#1}
+        \caption{\footnotesize {#2}}
+        \label{рис:#1}}
+    \hfil \hfil
+    \parbox[t]{0.49\textwidth}
+    {\centering
+        \includegraphics[width=.49\textwidth,  height=1.45\linewidth]{#3}
+        \caption{\footnotesize {#4}}
+        \label{рис:#3}}
+
+\end{figure}}
+
+
+%%%%% ФОТО РЯДОМ С ТЕКСТОМ
+%
+%\newcommand{\фотосправа}[2]{
+%    \begin{SCfigure}
+%        \centering {\footnotesize \caption{#2}
+%            \includegraphics[width = 0.6 \textwidth]{foto/#1}
+%            \label{рис:#1}
+%    \end{SCfigure}}
+
+
+
+%%%% Переопределение команды для
+%  Её вызов — \фотомасштаб{45.25mm}{название файла}{подпись рисунка}
+
+%  Первый параметр — название файла
+%  Второй параметр — название подписи к изображению
+%  Третий параметр — ширина
+\newcommand{\фотомасштаб}[3]
+{
+    \begin{figure}[H]
+        \center{\includegraphics[width=#3]{#1}}
+        \caption{\small{#2}}
+        \label{рис:#1}
+    \end{figure}
+}
+
+
+
+%  Её вызов — \фотоповорот{45.25mm}{название файла}{подпись рисунка}{угол поворота}
+%  Первый параметр — ширина
+%  Второй параметр — название файла
+%  Третий параметр — название подписи к изображению
+\newcommand{\фотоповорот}[4]
+{
+    \begin{figure}[hpt!]
+        \center{\includegraphics[angle=#4,width=#1]{#2}}
+        \caption{\small {#3}}
+        \label{рис:#2}
+    \end{figure}
+}
+
+%%% ИЗМЕРИТЬ ШИРИНУ СТРАНИЦЫ
+\newcommand{\ширина}{\the\textwidth\\
+    \printinunitsof{mm}\prntlen{\textwidth}}

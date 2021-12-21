@@ -1,0 +1,70 @@
+%
+%
+%
+%\begin{landscape}
+%{\tiny	
+%\csvautolongtable[separator=semicolon]{csv/Автомобили_перечень2.csv}
+%}
+%\end{landscape}
+%
+%
+%\pagebreak
+%
+%\begin{landscape}
+%\csvreader[separator=semicolon, tabular=|r|l|c|,
+%table head=\hline & Person & Matr.~No.\\\hline\hline,
+%late after line=\\\hline]%
+%{csv/Автомобили_перечень2.csv}{}%
+%{\thecsvrow & \csvcolii~\csvcoli & \csvcoliii}%
+%\end{landscape}
+
+%\pagebreak
+%
+%\begin{landscape}
+%\begin{longtable}{|p{10mm}|p{55mm}|p{40mm}|}\hline%
+%	п/п	& Заголовок любой & Любой\\\hline\hline
+%	%
+%	
+%	\csvreader[separator=semicolon, 
+%	late after line=\\\hline]%
+%	%
+%	{csv/Автомобили_перечень2.csv}{}%
+%	%
+%	{\thecsvrow & \csvcolii~\csvcoli & \csvcolvii}%
+%
+%	
+%\end{longtable}
+%\end{landscape}
+
+
+\pagebreak
+
+%\begin{landscape}
+%	\begin{longtable}{|p{10mm}|P{80mm}|P{70mm}|}
+%			\caption[]{\footnotesize {\textbf{Перечень транспортных средств и соответствующих им актов об оказании услуг и заказ-нарядов к государственному контракту № 1818188100962002312194450/965/18 от 08.10.2018. }}} \label{tab:hist}\\
+%		\hline%
+%		п/п	& Транспортное средство & Номер заказ-наряд\\\hline\hline\endhead
+%		%
+%\csvreader[separator=semicolon, late after line=\\\hline]%
+%		%
+%{csv/Автомобили_перечень.csv}{1=\имя,3=\firstname,4=\matnumber}%
+%{\thecsvrow & \firstname~\имя & \matnumber}%
+%		
+%	\end{longtable}
+%\end{landscape}
+
+
+%\csvreader[separator=semicolon, %late after line=\\\hline
+%]
+%%
+%{csv/Автомобили_перечень.csv}{1=\номер,2=\код,3=\машина,4=\заказнаряд,5=\цифра, 6=\процент, 7=\поакту, 8=\норматив, 9=\отклонение}%
+%{\begin{flushleft}\large\bfseries \номер. \, Заказ-наряд  \заказнаряд \end{flushleft}
+%	\large%\ifcsvstrcmp{\gender}{f}{Ms.}{Mr.}
+%	Автомобиль \машина, возраст  на момент расчета, лет:  \цифра.
+%	\par Допустимая надбавка трудоемкости, \% :\процент. 
+%	\par Цена работ по заказ-наряду: \поакту, руб. 
+%	\par Цена работ по нормативам:\,\,\, \норматив, руб. 
+%	\par Отклонение:\hspace{6mm}  \отклонение, руб.
+%	\par (Калькуляция: \ссылка{рис:\код})}%
+
+

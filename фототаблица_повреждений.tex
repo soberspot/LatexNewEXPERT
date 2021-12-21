@@ -1,0 +1,136 @@
+
+\documentclass[a4paper,10pt]{report}
+
+\usepackage{xltxtra} %выполняет основные настройки XeLaTeX и загружает пакет fontspec
+
+\usepackage{xunicode}
+
+\usepackage{polyglossia}
+
+\usepackage{ccaption}
+
+\usepackage{subfigure}
+
+\usepackage{float}
+
+%\setdefaultlanguage{russian}
+\setmainlanguage{russian}
+\setotherlanguage{english}
+
+\defaultfontfeatures{Ligatures={TeX},Renderer=Basic}  %% свойства шрифтов по умолчанию
+\setkeys{russian}{babelshorthands=true} %поддержка специальных команд пакета babel
+
+\setmainfont[Ligatures={TeX,Historic}]{Arial} %% задаёт основной шрифт документа
+%
+%\setsansfont{Comic Sans MS}           %% задаёт шрифт без засечек
+%%\setsansfont{Arial} 
+
+% В качестве аргумента можно указывать системное имя шрифта, имя файла или файлов шрифт
+\setsansfont[
+BoldFont=arialbd.ttf,
+ItalicFont=ariali.ttf,
+BoldItalicFont=arialbi.ttf
+]{arial.ttf}
+\setmonofont{Courier New} 
+
+\newfontfamily{\cyrillicfont}{Arial} 
+\newfontfamily{\cyrillicfontrm}{Arial}
+\newfontfamily{\cyrillicfonttt}{Arial}
+\newfontfamily{\cyrillicfontsf}{Arial}
+
+
+%переопределения терминов в пакете polyglossia
+\addto\captionsrussian{%
+	\renewcommand{\figurename}{Фото }%
+	\renewcommand{\tablename}{Табл.}%
+}
+
+\frenchspacing
+
+\renewcommand{\epsilon}{\ensuremath{\varepsilon}}
+\renewcommand{\phi}{\ensuremath{\varphi}}
+\renewcommand{\kappa}{\ensuremath{\varkappa}}
+\renewcommand{\le}{\ensuremath{\leqslant}}
+\renewcommand{\leq}{\ensuremath{\leqslant}}
+\renewcommand{\ge}{\ensuremath{\geqslant}}
+\renewcommand{\geq}{\ensuremath{\geqslant}}
+\renewcommand{\emptyset}{\varnothing}
+
+%%%% Дополнительная работа с математикой
+\usepackage{amsmath,amsfonts,amssymb,amsthm,mathtools} % AMS
+\usepackage{icomma} % "Умная" запятая: $0,2$ --- число, $0, 2$ --- перечисление
+%%
+%%% Номера формул
+%\mathtoolsset{showonlyrefs=true} % Показывать номера только у тех формул, на которые есть \eqref{} в тексте.
+%%\usepackage{leqno} % Нумерация формул слева
+
+%% Свои команды
+%\DeclareMathOperator{\sgn}{\mathop{sgn}}
+
+%%% Перенос знаков в формулах (по Львовскому)
+%\newcommand*{\hm}[1]{#1\nobreak\discretionary{}
+%	{\hbox{$\mathsurround=0pt #1$}}{}}
+
+%%% Работа с картинками
+\usepackage{graphicx}  % Для вставки рисунков
+
+\graphicspath
+{
+	{./images/foto/}
+	{./images/doc/}
+	{./images/jpg/}
+	{./images/pdf/}
+	{./images/png/}
+	{./images/row/}
+	{./images/examples/}
+}
+\DeclareGraphicsExtensions{.pdf,.png,.jpg,.jpeg}
+
+\setlength\fboxsep{0pt} % Отступ рамки \fbox{} от рисунка
+\setlength\fboxrule{0pt} % Толщина линий рамки \fbox{}
+%\usepackage{wrapfig} % Обтекание рисунков текстом
+
+%%% Страница
+%\special{papersize=210mm,297mm}
+
+%\usepackage{extsizes} % Возможность сделать 14-й шрифт
+\usepackage{geometry} % Простой способ задавать поля
+\geometry{top=15mm}
+\geometry{bottom=15mm}
+\geometry{left=15mm}
+\geometry{right=15mm}
+%
+
+
+\usepackage{tikz} % Работа с графикой
+\usepackage{pgfplots}
+\pgfplotsset{compat=newest}
+\usepackage{pgfplotstable}
+
+% Убираем нумерацию страниц
+\pagenumbering{gobble}
+
+%\pagestyle{empty}
+
+\clubpenalty=10000 
+\widowpenalty=10000
+
+
+
+\captiondelim{. }
+
+
+
+\begin{document}
+
+
+%pagenumbering{Roman}
+\input {data}
+\input {pereopr}
+
+
+\Large{Фототаблица  повреждений }
+
+\input{bib/bibl}
+
+\end{document}

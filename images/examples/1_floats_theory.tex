@@ -1,0 +1,68 @@
+\documentclass[12pt]{article}
+% пример использования параметров, контролирующих
+% расмоложение флоатс
+% explanation of how floats are placed
+% and what parameters control the process
+
+\usepackage{lipsum}% генерирует текст командой  \lipsum 
+                   % just to add some dummy text with \lipsum command
+
+% Вместо картинки, будем помещать прямоугольник
+% Let's place a rectangular frame instead of a pic
+\newcommand\fakepic[2]{\framebox[#1cm]{\rule{0pt}{#2cm}\small #1$\times$#2 cm$^2$}}
+
+
+% http://tex.stackexchange.com/questions/39017/how-to-influence-the-position-of-float-environments-like-figure-and-table-in-lat
+% СЧЕТЧИКИ / COUNTERS
+%    totalnumber (default 3) =Макс кол-во флоатс на странице
+%                             max number of floats in a page
+%    topnumber (default 2) = макс кол-во флоатс вверху страницы
+%                            max number of floats in the top area
+%    bottomnumber (default 1) = макс кол-во флоатс внизу страницы
+%                               max number of floats in the bottom area
+% РАЗМЕРЫ (доли страницы) / AREAS (use \renewcommand)
+%    \topfraction (default 0.7) макс доля, проходящаяся на верх страницы
+%                               maximum size of the top area
+%    \bottomfraction (default 0.3)  макс доля приходящаяся на низ
+%                                   maximum size of the bottom area
+%    \textfraction (default 0.2)  миним доля, которая должна быть занята текстом
+%                                 minimum size of the text area, i.e., the area that must not be occupied by floats
+
+% Попробуйте поизменять параметры и понаблюдайте за эффектом
+% Try changing the below parameters to see the effect
+\setcounter{totalnumber}{10}
+\setcounter{topnumber}{10}
+\setcounter{bottomnumber}{10}
+\renewcommand{\topfraction}{1}
+\renewcommand{\bottomfraction}{1}
+\renewcommand{\textfraction}{0}
+
+\begin{document}
+
+\lipsum[1]
+
+\begin{figure}
+\centering
+\fakepic{5}{1}
+\caption{xxx}\label{fig:1}
+\end{figure}
+
+\begin{figure}
+\centering
+\fakepic{5}{2}
+\caption{xxx}\label{fig:2}
+\end{figure}
+
+\begin{figure}
+\centering
+\fakepic{5}{1}
+\caption{xxx}\label{fig:3}
+\end{figure}
+
+\begin{figure}
+\centering
+\fakepic{5}{1}
+\caption{xxx}\label{fig:4}
+\end{figure}
+
+\end{document}

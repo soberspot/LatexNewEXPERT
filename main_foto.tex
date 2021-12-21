@@ -1,0 +1,254 @@
+
+\documentclass[a4paper,10pt]{report}
+
+\usepackage{xltxtra} %выполняет основные настройки XeLaTeX и загружает пакет fontspec
+
+\usepackage{xunicode}
+
+\usepackage{polyglossia}
+
+\usepackage{ccaption}
+
+\usepackage{subfigure}
+
+%\setdefaultlanguage{russian}
+\setmainlanguage{russian}
+\setotherlanguage{english}
+
+\defaultfontfeatures{Ligatures={TeX},Renderer=Basic}  %% свойства шрифтов по умолчанию
+\setkeys{russian}{babelshorthands=true} %поддержка специальных команд пакета babel
+
+\setmainfont[Ligatures={TeX,Historic}]{Arial} %% задаёт основной шрифт документа
+%
+%\setsansfont{Comic Sans MS}           %% задаёт шрифт без засечек
+%%\setsansfont{Arial} 
+
+% В качестве аргумента можно указывать системное имя шрифта, имя файла или файлов шрифт
+\setsansfont[
+BoldFont=arialbd.ttf,
+ItalicFont=ariali.ttf,
+BoldItalicFont=arialbi.ttf
+]{arial.ttf}
+\setmonofont{Courier New} 
+
+\newfontfamily{\cyrillicfont}{Arial} 
+\newfontfamily{\cyrillicfontrm}{Arial}
+\newfontfamily{\cyrillicfonttt}{Arial}
+\newfontfamily{\cyrillicfontsf}{Arial}
+
+
+%переопределения терминов в пакете polyglossia
+\addto\captionsrussian{%
+	\renewcommand{\figurename}{Фото }%
+	\renewcommand{\tablename}{Табл.}%
+}
+
+\frenchspacing
+
+\renewcommand{\epsilon}{\ensuremath{\varepsilon}}
+\renewcommand{\phi}{\ensuremath{\varphi}}
+\renewcommand{\kappa}{\ensuremath{\varkappa}}
+\renewcommand{\le}{\ensuremath{\leqslant}}
+\renewcommand{\leq}{\ensuremath{\leqslant}}
+\renewcommand{\ge}{\ensuremath{\geqslant}}
+\renewcommand{\geq}{\ensuremath{\geqslant}}
+\renewcommand{\emptyset}{\varnothing}
+
+%%%% Дополнительная работа с математикой
+\usepackage{amsmath,amsfonts,amssymb,amsthm,mathtools} % AMS
+\usepackage{icomma} % "Умная" запятая: $0,2$ --- число, $0, 2$ --- перечисление
+%%
+%%% Номера формул
+%\mathtoolsset{showonlyrefs=true} % Показывать номера только у тех формул, на которые есть \eqref{} в тексте.
+%%\usepackage{leqno} % Нумерация формул слева
+
+%% Свои команды
+%\DeclareMathOperator{\sgn}{\mathop{sgn}}
+
+%%% Перенос знаков в формулах (по Львовскому)
+%\newcommand*{\hm}[1]{#1\nobreak\discretionary{}
+%	{\hbox{$\mathsurround=0pt #1$}}{}}
+
+%%% Работа с картинками
+\usepackage{graphicx}  % Для вставки рисунков
+\graphicspath{{foto/}{images/}{jpg/}}  % папки с картинками
+\setlength\fboxsep{0pt} % Отступ рамки \fbox{} от рисунка
+\setlength\fboxrule{0pt} % Толщина линий рамки \fbox{}
+%\usepackage{wrapfig} % Обтекание рисунков текстом
+
+%%% Страница
+%\special{papersize=210mm,297mm}
+
+%\usepackage{extsizes} % Возможность сделать 14-й шрифт
+\usepackage{geometry} % Простой способ задавать поля
+\geometry{top=20mm}
+\geometry{bottom=15mm}
+\geometry{left=15mm}
+\geometry{right=15mm}
+%
+
+
+\usepackage{tikz} % Работа с графикой
+\usepackage{pgfplots}
+\pgfplotsset{compat=newest}
+\usepackage{pgfplotstable}
+
+% Убираем нумерацию страниц
+\pagenumbering{gobble}
+
+%\pagestyle{empty}
+
+\clubpenalty=10000 
+\widowpenalty=10000
+
+
+
+\captiondelim{. }
+
+
+
+\begin{document}
+
+
+%pagenumbering{Roman}
+\input {data}
+\input {pereopr}
+
+
+\Large{Фототаблица  повреждений }
+
+\imgh{160mm}{1}{} 
+\imgh{160mm}{2}{}
+%\imgh{160mm}{images/3}{}
+%\imgh{160mm}{images/4}{}
+%\imgh{160mm}{images/5}{} 
+%\imgh{160mm}{images/6}{}
+%\imgh{160mm}{images/28}{}
+%\imgh{160mm}{images/7}{}
+%%\imgh{160mm}{images/30}{Вид сзади слева на поврежденные левые двери и левую В"---стойку}
+%\imgh{160mm}{images/8}{}
+%
+%\imgh{160mm}{images/9}{} 
+%\imgh{160mm}{images/10}{}
+%\imgh{160mm}{images/11}{ }
+%\imgh{160mm}{images/12}{ }
+%\imgh{160mm}{images/13}{} 
+%\imgh{160mm}{images/14}{}
+%\imgh{160mm}{images/15}{}
+%\imgh{160mm}{images/16}{}
+%\imgh{160mm}{images/17}{}
+%
+%\imgh{160mm}{images/18}{} 
+%\imgh{160mm}{images/19}{}
+%\imgh{160mm}{images/20}{ }
+%\imgh{160mm}{images/21}{ }
+%\imgh{160mm}{images/22}{} 
+%\imgh{160mm}{images/23}{}
+%\imgh{160mm}{images/24}{}
+%%\imgh{160mm}{images/25}{}
+%\imgh{160mm}{images/26}{}
+%
+%\imgh{160mm}{images/27}{} 
+%\imgh{160mm}{images/28}{}
+%\imgh{160mm}{images/24}{}
+%\imgh{160mm}{images/25}{}
+%\imgh{160mm}{images/26}{}
+
+%%ДВА рисунка  РЯДОМ
+\begin{figure}[ht]\centering
+	
+	\parbox[t]{0.49\textwidth}{\centering
+		\includegraphics[angle=90,width=.49\textwidth]{1}
+		\hfil \hfil%раздвигаем боксы по горизонтали
+		\caption{}\label{fig:metka−1}}
+	\parbox[t]{0.49\textwidth}{\centering
+		\includegraphics[angle=90,width=.49\textwidth]{2}
+		\hfil \hfil%раздвигаем боксы по горизонтали
+		\caption{}\label{fig:metka−2}}
+\end{figure}
+
+
+%\imgroot{160mm}{images/d1}{}{90}
+%%\imgroot{160mm}{images/d2}{}{90} 
+%\imgroot{160mm}{images/29}{}{90}
+%\imgroot{160mm}{images/d2}{}{90}
+%\imgroot{160mm}{images/21}{}{-90}
+%\imgroot{160mm}{images/22}{}{-90}
+
+
+%
+%
+%\begin{figure}[ht]\centering
+%	\parbox[t]{0.49\textwidth}{\centering
+%		\includegraphics[width=.49\textwidth]{1}
+%		\hfil \hfil%раздвигаем боксы по горизонтали
+%		\caption{«подпись-1»}\label{fig:metka−1}}
+%	\parbox[t]{0.49\textwidth}{\centering
+%		\includegraphics[width=.49\textwidth]{1}
+%		\hfil \hfil%раздвигаем боксы по горизонтали
+%		\caption{«подпись-1»}\label{fig:metka−1}}
+%\end{figure}
+%
+%
+%
+%\begin{figure}[ht]\centering
+%	\parbox[t]{0.49\textwidth}{\centering
+%		\includegraphics[width=.49\textwidth]{1}
+%		\hfil \hfil%раздвигаем боксы по горизонтали
+%		\caption{«подпись-1»}\label{fig:metka−1}}
+%	\parbox[t]{0.49\textwidth}{\centering
+%		\includegraphics[width=.49\textwidth]{1}
+%		\hfil \hfil%раздвигаем боксы по горизонтали
+%		\caption{«подпись-1»}\label{fig:metka−1}}
+%\end{figure}
+%
+%
+%
+%\begin{figure}[h]
+%	\begin{minipage}[h]{0.47\linewidth}
+%		\centering{\includegraphics[width=1\linewidth]{1}} a) \\
+%	\end{minipage}
+%	\hfill
+%	\begin{minipage}[h]{0.47\linewidth}
+%		\centering{\includegraphics[width=1\linewidth]{1}} \\b)
+%	\end{minipage}
+%	\vfill
+%	\begin{minipage}[h]{0.47\linewidth}
+%		\centering{\includegraphics[width=1\linewidth]{1}} c) \\
+%	\end{minipage}
+%	\hfill
+%	\begin{minipage}[h]{0.47\linewidth}
+%		\centering{\includegraphics[width=1\linewidth]{1}} d) \\
+%	\end{minipage}
+%	\caption{Correlation signal peaks: a) numerical experiment, b)
+%		registered correlation signals, c) intensity distribution of correlation
+%		signals in numerical experiment, d) correlation signals intensity
+%		distribution for DCRAW processed data.}
+%	\label{ris:experimentalcorrelationsignals}
+%\end{figure}
+%
+%
+%
+%\begin{figure}[ht!]  
+%	\vspace{-4ex} \centering \subfigure[]{
+%		\includegraphics[width=0.25\linewidth]{1} \label{fig:actuatorscouplingSheme_decoupledcase} }  
+%	\hspace{4ex}
+%	\subfigure[]{
+%		\includegraphics[width=0.25\linewidth]{1} \label{fig:actuatorscouplingSheme_nearestcoupledcase} }
+%	\hspace{4ex}
+%	\subfigure[]{ \includegraphics[width=0.24\linewidth]{1} \label{fig:actuatorscouplingSheme_nearestcoupled_and_diag_case} }  
+%	\caption{Coupling cases for the DM models: \subref{fig:actuatorscouplingSheme_decoupledcase} decoupled case; \subref{fig:actuatorscouplingSheme_nearestcoupledcase} coupling between the closest neighbours; \subref{fig:actuatorscouplingSheme_nearestcoupled_and_diag_case} coupling between the closest neighbour and diagonally adjacent actuators.} \label{fig:threeDMcases}
+%	\end{figure}
+%
+%\begin{figure}[ht!]  
+%	\vspace{-4ex} \centering \subfigure[]{
+%		\includegraphics[width=0.25\linewidth]{1} \label{fig:actuatorscouplingSheme_decoupledcase} }  
+%	\hspace{4ex}
+%	\subfigure[]{
+%		\includegraphics[width=0.25\linewidth]{1} \label{fig:actuatorscouplingSheme_nearestcoupledcase} }
+%	\hspace{4ex}
+%	\subfigure[]{ \includegraphics[width=0.24\linewidth]{1} \label{fig:actuatorscouplingSheme_nearestcoupled_and_diag_case} }  
+%	\caption{Coupling cases for the DM models: \subref{fig:actuatorscouplingSheme_decoupledcase} decoupled case; \subref{fig:actuatorscouplingSheme_nearestcoupledcase} coupling between the closest neighbours; \subref{fig:actuatorscouplingSheme_nearestcoupled_and_diag_case} coupling between the closest neighbour and diagonally adjacent actuators.} \label{fig:threeDMcases}
+%\end{figure}
+
+\end{document}

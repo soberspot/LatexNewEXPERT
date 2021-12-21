@@ -1,0 +1,101 @@
+\documentclass[12pt]{article}
+% пример использования \FloatBarrier из placeins
+% demonstration of \FloatBarrier
+
+% СРАВНИТЕ ПОВЕДЕНИЕ С И БЕЗ placeins ЗАКОМЕНТИРОВАВ СТРОКУ
+%   С  \usepackage[...]{placeins}
+% 
+% для автоматического \FloatBarrier до каждой \section:
+% if you want each section to be a barrier, use 
+\usepackage[section,above,below]{placeins}
+
+
+% команда \afterpage
+% provides \afterpage command
+\usepackage{afterpage}
+
+
+% На случай, если без \FloatBarrier - заглушка
+\providecommand\FloatBarrier{}
+
+%\usepackage{graphicx} % we do not need it for demonstration
+
+\usepackage{lipsum}
+\newcommand\fakepic[2]{\framebox[#1cm]{\rule{0pt}{#2cm}\small #1$\times$#2 cm$^2$}}
+
+
+\begin{document}
+
+\section{First section}\label{sec:1}
+
+Demonstration of FloatBarrier from placeins. When italic text starts,
+all the float should be already in place. One could use a clearpage
+right before the italic text, but that would not only output
+all the floats but also start a new page. FloatBarrier just empties
+the floats que and then proceeds with typesetting the text without
+creating a new page. 
+
+
+\lipsum[1]
+
+\begin{figure}
+\centering
+\fakepic{5}{1}
+\caption{Figure from section \ref{sec:1}}\label{fig:1}
+\end{figure}
+
+
+\lipsum[1]
+
+\begin{figure}
+\centering
+\fakepic{5}{6}
+\caption{Figure from section \ref{sec:1}}\label{fig:2}
+\end{figure}
+
+\begin{figure}
+\centering
+\fakepic{5}{6}
+\caption{Figure from section \ref{sec:1}}\label{fig:3}
+\end{figure}
+
+\begin{figure}[b]
+\centering
+\fakepic{5}{6}
+\caption{Figure from section \ref{sec:1}}\label{fig:4}
+\end{figure}
+
+\section{qqqq www eeeee rrrr}\label{sec:2}
+
+\lipsum[1]
+
+\begin{figure}
+\centering
+\fakepic{5}{6}
+\caption{Figure from section \ref{sec:2}}\label{fig:5}
+\end{figure}
+
+\FloatBarrier
+{\itshape
+When this italic text starts, all the floating figures 
+up to Figure \ref{fig:5} are already 
+typeset. The text will go (if possible) on the same page as the last 
+figure.}
+
+\begin{figure}
+\centering
+\fakepic{5}{6}
+\caption{This figure does not fit on the page where it could be started. 
+If you used FloatBarrier right after it, it would lead to a partly
+empty page. But using afterpage prevents that.}\label{fig:6}
+\end{figure}
+
+% \FloatBarrier is not needed here. But if you decided to use
+% due to some reason, do it within \afterpage
+\afterpage{\FloatBarrier}
+
+\lipsum[1-2]
+
+
+
+\end{document}

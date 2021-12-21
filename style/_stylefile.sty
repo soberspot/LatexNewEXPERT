@@ -1,0 +1,174 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\ProvidesPackage{stylefile}
+
+\usepackage{fontspec}   
+\RequirePackage{csvsimple}
+\usepackage{ragged2e}
+\usepackage{microtype}
+
+\justifying
+%\sloppy
+\tolerance=500
+\hyphenpenalty=10000
+\emergencystretch=3em
+\usepackage{cmap}
+\usepackage{indentfirst} 
+%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{ifxetex}
+% select kind of TeX
+\ifxetex % for xetex
+%\usepackage[no-math]{fontspec}
+%\usepackage{xltxtra}
+\usepackage{polyglossia}[indentfirst=true]
+\setdefaultlanguage[spelling=modern]{russian}
+\setotherlanguage{english}
+\defaultfontfeatures{Ligatures={TeX},Renderer=Basic}
+\setmainfont[Scale=1]{Times New Roman} % scale to 14bp
+\setsansfont[Scale=.85]{Arial}
+\setmonofont[Scale=.8]{Courier New}
+\newfontfamily\cyrillicfonttt[Script=Cyrillic,Scale=.85]{Arial}
+\else 
+\usepackage[warn]{mathtext}	
+\usepackage[T2A]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english,russian]{babel}
+\fi
+\usepackage{mathtools}                    
+\usepackage{amsmath}
+%\usepackage{unicode-math} 
+\usepackage{amssymb}  
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+\RequirePackage{keyval}
+\RequirePackage{url}
+\RequirePackage[dvips]{graphicx}
+%\RequirePackage{fancyvrb}
+%
+\usepackage{csquotes}
+%
+%
+%\usepackage{subfigure}
+\usepackage{subcaption}
+ % Для вставки рисунков
+\graphicspath
+{
+    {./images/foto/}
+    {./images/jpg/}
+    {./images/pdf/}
+    {./images/png/}
+    {./images/examples/}
+}
+\DeclareGraphicsExtensions{.pdf,.png,.jpg}
+\usepackage[leftcaption]{sidecap}
+%
+%%% Работа с таблицами
+\usepackage{array, tabularx, tabulary, booktabs, longtable, colortbl}
+% Дополнительная работа с таблицами
+%
+\usepackage{multirow} % Слияние строк в таблице
+%
+%%%% Программирование
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{pythontex}
+%
+\usepackage{etoolbox} % логические операторы
+%\usepackage{csquotes} % кавычки
+%
+\usepackage{geometry} % Простой способ задавать поля
+\geometry{top=20mm}
+\geometry{bottom=20mm}
+\geometry{left=25mm}
+\geometry{right=20mm}
+\usepackage{setspace} % Интерлиньяж  
+%\onehalfspacing % Интерлиньяж 1.5
+% произвольный интервал
+\setstretch{1.25}
+%
+% Гиперссылки  %%  pagebackref = true  не  проверен
+\usepackage[unicode=true, pdfusetitle, pagebackref=true bookmarks=true,bookmarksnumbered=false,bookmarksopen=false, breaklinks=false,pdfborder={0 0 1},backref=false,colorlinks=true]{hyperref}
+%
+% Цвет гиперссылок
+\usepackage[usenames,dvipsnames,svgnames,table,rgb]{xcolor}
+\usepackage{tcolorbox}
+%
+\definecolor{linkcolor}{HTML}{000099} % цвет ссылок
+\definecolor{urlcolor}{HTML}{0000FF}  % цвет гиперссылок
+\hypersetup{			              % Гиперссылки
+	unicode=true,                     % русские буквы в раздела PDF
+	pdfstartview=FitH,
+	pdftitle={Экспертное исследование},   % Заголовок
+	pdfauthor={Мраморнов Александр},      % Автор
+	pdfsubject={Автотехника},             % Тема
+	pdfcreator={ЮРЭКГРУПП},               % Приложение
+	pdfproducer={ИП Мраморнов А.В.},      % Создатель PDF
+	colorlinks=true,       	% false: ссылки в рамках; true: цветные ссылки
+	linkcolor=black,        % внутренние ссылки
+	citecolor=black,        % на библиографию
+	filecolor=magenta,      % на файлы
+	urlcolor=black          % на URL
+}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%############
+%\usepackage[
+%backend=biber, 
+%sorting=nyt,
+%bibstyle=gost-authoryear,
+%citestyle=gost-authoryear
+%]{biblatex}
+%
+\usepackage{multicol} % Несколько колонок
+% Устанавивам размер отступа абзаца
+\setlength{\parindent}{2em}
+%
+%% Чтобы в оглавлении были только главы, и ничего ниже
+\setcounter{secnumdepth}{-1}
+%%#####################################
+% Картинки по разделам
+\usepackage{float}
+%\usepackage{ floatrow}
+\usepackage[section,above,below]{placeins}
+\usepackage{afterpage,placeins}
+\usepackage{tikz}       % Работа с графикой
+\usepackage{pgfplots}
+\pgfplotsset{compat=newest}
+\usepackage{pgfplotstable}
+\usepackage{lipsum}
+\usepackage{pdfpages}
+\usepackage{eso-pic}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%
+\usepackage{enumitem}    % , amssymb 
+\usepackage{qrcode}
+\usepackage{pstricks}
+\usepackage{pst-barcode}
+\usepackage{fancybox,fancyhdr} % Колонтитулы
+\setlist{nolistsep, itemsep=0cm,parsep=0pt}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  Замена вместо "Рис. 1:" необходимо "Рис. 1. "
+\RequirePackage{caption}
+\DeclareCaptionLabelSeparator{tchk}{. }
+\captionsetup{justification=centering,labelsep=tchk}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  Переопределения
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{marginnote}
+\usepackage{emptypage}
+\usepackage{todonotes}
+%\usepackage{layouts}
+\usepackage{lastpage}
+
+\newlist{todolist}{itemize}{2}
+\setlist[todolist]{label=$\square$}
+\usepackage{pifont}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  ВОДЯНОЙ ЗНАК
+\usepackage{draftwatermark} 
+
+
+

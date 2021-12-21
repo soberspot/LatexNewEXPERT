@@ -1,0 +1,33 @@
+\documentclass[12pt]{article}
+% пример использования flafter
+% demonstration of flafter
+
+% попробуйте также без flafter и понаблюдайте за положением Figure 1.
+\usepackage{flafter}% помещает флоат ПОСЛЕ первой ссылки на него 
+                    % make sure the float is after
+                    % it has been referenced in the text
+
+%\usepackage{graphicx} % we do not need it for demonstration
+
+\newcommand\fakepic[2]{\framebox[#1cm]{\rule{0pt}{#2cm}\small #1$\times$#2 cm$^2$}}
+
+
+\begin{document}
+
+
+Without package flafter, figure \ref{fig:1} will be placed above this text.
+If the flafter package is loaded, the figure will be below the text: 
+after it has been referenced. Be carefull in using this package if a 
+large number of floats (figures, tables) is present in your document. 
+
+
+
+\begin{figure}
+\centering
+\fakepic{5}{1}
+\caption{xxx}\label{fig:1}
+\end{figure}
+
+
+
+\end{document}

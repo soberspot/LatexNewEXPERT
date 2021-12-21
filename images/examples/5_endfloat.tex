@@ -1,0 +1,49 @@
+\documentclass[12pt]{article}
+% пример использования endfloat % demonstration of endfloat
+
+% Попробуйте результат с и без следующей строки (\usepackage)
+% Try with and without the next line (\usepackage)
+\usepackage[nomarkers]{endfloat} 
+                      % переносит все рисунки в конец док-та
+                      % all floats are moved to the end
+% Пакет имеет следующие необязательные параметры
+%   nofiglist -- не выводить List of figures
+%   notablist --                     tables
+%   nolists   --                     figures and tables
+%   nomarkers --             [Figure 1 about here]
+% и т.д.
+
+% the package takes the following options:
+%   nofiglist -- do not print List of figures
+%   notablist --                      tables
+%   nolists   --                      figures and tables
+%   nomarkers -- do not print [Figure 1 about here]
+% and others
+
+
+\usepackage{lipsum}
+\newcommand\fakepic[2]{\framebox[#1cm]{\rule{0pt}{#2cm}\small #1$\times$#2 cm$^2$}}
+
+
+\begin{document}
+
+
+Package endfloat moves all the floats to the end.
+
+\begin{figure}
+\centering
+\fakepic{5}{1}
+\caption{xxx}\label{fig:1}
+\end{figure}
+
+\lipsum[1]
+
+\begin{figure}
+\centering
+\fakepic{5}{1}
+\caption{xxx}\label{fig:2}
+\end{figure}
+
+\lipsum[2]
+
+\end{document}

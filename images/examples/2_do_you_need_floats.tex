@@ -1,0 +1,201 @@
+\documentclass[12pt,a4paper]{article}
+% пример использования \captionof{}{}
+% examples with \captionof{}{}
+
+\usepackage[labelformat=simple]{subcaption}
+\renewcommand\thesubfigure{(\alph{subfigure})} % I want (a), not just a
+
+\usepackage[demo]{graphicx} % опция demo вставляет черные прамоугольники вместо картинок
+                            % demo option prints black squares instead of pics
+
+\usepackage{array} % для параметра m{} в таблицах
+                   % provides m{} parameter for tabulars
+
+\begin{document}
+
+The code below inserts a picture and provides a caption.
+{
+ \centering
+ \includegraphics{mypicture}
+ \captionof{figure}{xxxx}\label{fig:mypic}
+}
+
+\vspace*{1cm}
+
+Picture in a table:
+
+\noindent
+\begin{tabular}{m{0.5\linewidth}m{0.5\linewidth}}
+     Here just some text text text text text text text 
+     text text text text text text text text text
+     text text text text text text text text text 
+     text text text text text text text text text 
+     text text text text text text text text text
+     text text text text text text text text text 
+     text text text text text text text text text   
+    &
+     \centering
+     \includegraphics{roman.jpg}
+     \captionof{figure}{Usage of captionof}\label{fig:intab}
+\end{tabular}
+
+\clearpage %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{figure}\centering % В одном флоат...
+  % сначала картинка...
+  \includegraphics[width=7cm]{fig/roman_b}
+  \captionof{figure}{Figure part of the float}\label{fig:fig}
+\vspace*{3em}
+  % потом таблица
+  \begin{tabular}{c|cc}
+    aaaaaaa & bbbbbbb & cccccccccc \\ \hline
+    zzzzzzz & xxxxxxx & vvvvvvvvv  \\
+    aaaaaaa & bbbbbbb & cccccccccc \\
+    zzzzzzz & xxxxxxx & vvvvvvvvv  \\
+    aaaaaaa & bbbbbbb & cccccccccc \\
+    zzzzzzz & xxxxxxx & vvvvvvvvv  \\
+    zzzzzzz & xxxxxxx & vvvvvvvvv 
+  \end{tabular}
+  \captionof{table}{Table part of the float}\label{fig:table}
+\end{figure}
+
+\clearpage %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newsavebox{\leftpic}
+
+\begin{figure}[t]\centering
+% Левая картинка (а) помещена в бокс, чтобы измерить её высоту
+\sbox{\leftpic}%
+{% Левая картинка (a):
+ \begin{subfigure}[b]{0.45\linewidth}\centering
+   \includegraphics[height=7cm]{fig/roman_a1}
+   \caption{Subfigure A}\label{fig:2a}
+ \end{subfigure}%
+}
+ %------------------------
+ % Вывысти картинку, сохраненную в боксе
+ \usebox{\leftpic}
+ \quad % немного пустого места между левой и правой картинками
+ % Две правые картинки в минипейдж, 
+ %   - высота которого равна высоте левой картинки: \ht\leftpic
+ %   - материал будет растянут вертикально: [s] + \vfill 
+ \begin{minipage}[b][\ht\leftpic][s]{0.45\linewidth}
+  \begin{center}
+   \includegraphics[height=2.5cm]{fig/roman_b}
+   \captionof{subfigure}{Subfigure B}\label{fig:2b}
+  \end{center}
+
+  \vfill
+
+  \begin{center}
+   \includegraphics[height=2.5cm]{fig/roman_c}
+   \captionof{subfigure}{Subfigure C}\label{fig:2c}
+  \end{center}
+ \end{minipage}
+\caption{Fancy placement of subfigures}
+\label{fig:2}
+\end{figure}
+
+\clearpage %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{figure}[!t]\centering
+\setcounter{subfigure}{0}
+\addtocounter{figure}{1}
+\def\hgt{15cm}
+\def\wdt{5cm}
+ \begin{minipage}[b][\hgt][s]{0.45\linewidth}
+  \begin{center}
+   \includegraphics[width=\wdt]{fig/roman_b}
+   \captionof{subfigure}{Subfigure A}\label{fig:3a}
+  \end{center}
+
+  \vfill
+
+  \begin{center}
+   \includegraphics[width=\wdt]{fig/roman_c}
+   \captionof{subfigure}{Subfigure B}\label{fig:3bb}
+  \end{center}
+
+   \vfill
+
+  \begin{center}
+   \includegraphics[width=\wdt]{fig/roman_aa}
+   \captionof{subfigure}{Subfigure C}\label{fig:3c}
+  \end{center}
+ \end{minipage}
+%
+ \quad
+%
+ \begin{minipage}[b][\hgt][s]{0.45\linewidth}
+  \begin{center}
+   \includegraphics[angle=90,width=\wdt]{fig/roman_b}
+   \captionof{subfigure}{Subfigure D}\label{fig:3d}
+  \end{center}
+
+  \vfill
+
+  \begin{center}
+   \includegraphics[width=7cm,height=5cm]{fig/roman_c}
+   \captionof{subfigure}{Subfigure E}\label{fig:3e}
+  \end{center}
+ \end{minipage}
+ \addtocounter{figure}{-1}
+ \caption{Fancy placement of subfigures}\label{fig:3}
+\end{figure}
+
+Example of a reference: Figure \ref{fig:3} but also \ref{fig:3bb}.
+
+\clearpage %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Figures \ref{fig:x1}-\ref{fig:x5} show the same trick as 
+in Figure \ref{fig:3} but with figures instead of 
+subfigures
+
+
+\begin{figure}[!t]\centering
+\def\hgt{15cm}
+\def\wdt{5cm}
+ \begin{minipage}[b][\hgt][s]{0.45\linewidth}
+  \begin{center}
+   \includegraphics[width=\wdt]{fig/roman_b}
+   \captionof{figure}{caption x1}\label{fig:x1}
+  \end{center}
+
+  \vfill
+
+  \begin{center}
+   \includegraphics[width=\wdt]{fig/roman_c}
+   \captionof{figure}{caption x2}\label{fig:x2}
+  \end{center}
+
+   \vfill
+
+  \begin{center}
+   \includegraphics[width=\wdt]{fig/roman_aa}
+   \captionof{figure}{caption x3}\label{fig:x3}
+  \end{center}
+ \end{minipage}
+%
+ \quad
+%
+ \begin{minipage}[b][\hgt][s]{0.45\linewidth}
+  \begin{center}
+   \includegraphics[angle=90,width=\wdt]{fig/roman_b}
+   \captionof{figure}{caption x4}\label{fig:x4}
+  \end{center}
+
+  \vfill
+
+  \begin{center}
+   \includegraphics[width=7cm,height=5cm]{fig/roman_c}
+   \captionof{figure}{caption x5}\label{fig:x5}
+  \end{center}
+ \end{minipage}
+%
+\end{figure}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\end{document}

@@ -1,0 +1,109 @@
+\documentclass[12pt,a4paper,twoside]{book}
+% пример использования Double Page Float и \ContinuedFloat
+% examples with Double Page Float & \ContinuedFloat
+
+\usepackage{dpfloat}
+
+\usepackage{caption}
+\usepackage[labelformat=simple]{subcaption}
+\renewcommand\thesubfigure{(\alph{subfigure})} % I want (a), not just a
+
+%---------------------------------------
+\usepackage{lipsum} % вставляет куски текста / dummy text
+\usepackage[demo]{graphicx} % опция demo вставляет черные прямоугольники вместо картинок
+                            % demo option prints black squares instead of pics
+
+% для краткости, новое окружение / just a shortcut
+\newenvironment{mysubfig}
+{\begin{subfigure}{0.5\linewidth}\centering}
+{\end{subfigure}}
+
+
+\begin{document}
+
+See very long Figure \ref{fig:long}, which consists of two parts:
+the first is on page \pageref{fig:A} and the other on page \pageref{fig:I}.
+If printed in a book (e.g., PhD dissertation), it is better to put them 
+on two consecutive pages: the first part on even (i.e. left) page
+and the second on an odd (i.e. right) page.
+
+\begin{figure}
+ \begin{leftfullpage}
+  \begin{mysubfig} % 1-й "подрисунок" / 1st subifure
+     \includegraphics{qq}
+     \caption{AAAAAA}\label{fig:A}
+  \end{mysubfig} 
+  \begin{mysubfig}   % 2-й "подрисунок" / 2nd subifure
+     \includegraphics{qq}
+     \caption{BBBBBB}\label{fig:B}
+  \end{mysubfig} 
+  \begin{mysubfig}   % 3-й "подрисунок" / 3rd subifure
+     \includegraphics{qq}
+     \caption{CCCCCC}\label{fig:C}
+  \end{mysubfig} 
+  \begin{mysubfig}   % 4-й "подрисунок" / 4th subifure
+     \includegraphics{qq}
+     \caption{DDDDDD}\label{fig:D}
+  \end{mysubfig} 
+  \begin{mysubfig}   % 5-й "подрисунок" / 5th subifure
+     \includegraphics{qq}
+     \caption{EEEEEE}\label{fig:E}
+  \end{mysubfig} 
+  \begin{mysubfig}   % 6-й "подрисунок" / 6th subifure
+     \includegraphics{qq}
+     \caption{FFFFFF}\label{fig:F}
+  \end{mysubfig} 
+  \begin{mysubfig}   % 7-й "подрисунок" / 7th subifure
+     \includegraphics{qq}
+     \caption{GGGGGG}\label{fig:G}
+  \end{mysubfig} 
+  \begin{mysubfig}   % 8-й "подрисунок" / 8th subifure
+     \includegraphics{qq}
+     \caption{HHHHHH}\label{fig:H}
+  \end{mysubfig} 
+  %---------------------
+  \caption{LEFT PART of A very long figure with subfigures}\label{fig:long}
+ \end{leftfullpage}
+\end{figure}
+
+% - - - -
+
+\begin{figure} \ContinuedFloat % продолжение рисунка
+ \begin{fullpage}
+  \begin{mysubfig}   % 9-й "подрисунок" / 9th subifure
+     \includegraphics{qq}
+     \caption{IIIIII}\label{fig:I}
+  \end{mysubfig} 
+  \begin{mysubfig}   % 10-й "подрисунок" / 10th subifure
+     \includegraphics{qq}
+     \caption{JJJJJJ}\label{fig:J}
+  \end{mysubfig} 
+  \begin{mysubfig}   % 11-й "подрисунок" / 11th subifure
+     \includegraphics{qq}
+     \caption{KKKKKK}\label{fig:K}
+  \end{mysubfig} 
+  \begin{mysubfig}   % 12-й "подрисунок" / 12th subifure
+     \includegraphics{qq}
+     \caption{LLLLLL}\label{fig:L}
+  \end{mysubfig} 
+  \begin{mysubfig}   % 13-й "подрисунок" / 13th subifure
+     \includegraphics{qq}
+     \caption{MMMMMM}\label{fig:M}
+  \end{mysubfig} 
+  \begin{mysubfig}   % 14-й "подрисунок" / 14th subifure
+     \includegraphics{qq}
+     \caption{NNNNNNN}\label{fig:N}
+  \end{mysubfig} 
+   %----------------------
+  \caption{RIGHT PART of A very long figure with subfigures (continued)} % \label здесь не нужна!!! / no need for \label here
+
+ \end{fullpage}
+\end{figure}
+
+Just dummy text: \lipsum[1-2]
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\end{document}

@@ -1,0 +1,140 @@
+\begin{table}[h]
+	\centering
+	\begin{tabular}{lllll}
+		\toprule
+		\multirow{2}{*}[-1em]{Models} & \multicolumn{3}{c}{Metric 1} & Metric 2\\
+		\addlinespace[10pt]
+		\cmidrule(lr){2-4} \cmidrule(lr){5-5} \\
+		{} & precision & recall & F-score  & R@10 \\
+		\midrule
+		model 1 & 0.67  & 0.8 & 0.729  & 0.75 \\
+		model 2 & 0.8 & 0.9 & 0.847 & 0.85 \\
+		\bottomrule
+	\end{tabular}
+\end{table}
+
+
+
+
+
+\begin{landscape}
+{\tiny	
+\csvautolongtable[separator=semicolon]{csv/avto.csv}
+}
+\end{landscape}
+
+
+
+
+%
+
+
+
+\begin{tabular}{|P{50mm}|P{50mm}|}\hline%
+	\bfseries Персоны  & \bfseries Индекс%
+	\csvreader[head to column names]{test.csv}{}%
+%	
+	{\\\givenname\  \name & \matriculation \,  \matriculation}%
+	
+
+%	
+	\\\hline
+%	
+\end{tabular}
+
+Или
+
+
+\begin{longtable}{|p{10mm}|p{55mm}|p{40mm}|}\hline%
+п/п	& Заголовок любой & Любой\\\hline\hline
+	%
+
+	\csvreader[%separator=semicolon, 
+	late after line=\\\hline]%
+	%
+	{test.csv}{name=\name,givenname=\firstname,matriculation=\matnumber}%
+	%
+	{\thecsvrow & \firstname~\name & \matnumber}%
+
+\end{longtable}
+
+
+
+Еще более удобный и предпочтительный способ создания таблицы - это установка соответствующих клавиш параметров. Обратите внимание, что это дает вам возможность создать стиль pgfkeys, который содержит создание всей таблицы.
+
+\csvreader[tabular=|r|l|c|,
+table head=\hline & Таже таблица & но записана по другму\\\hline\hline,
+late after line=\\\hline]%
+%
+{test.csv}{name=\name,givenname=\firstname,matriculation=\matnumber}%
+%
+{\thecsvrow & \firstname~\name & \matnumber}%
+
+
+Еще один способ
+
+\csvstyle{myTableStyle}{tabular=|r|l|c|,
+	table head=\hline & Person & Matr.~No.\\\hline\hline,
+	late after line=\\\hline,
+	head to column names}
+
+\csvreader[myTableStyle]{test.csv}{}%
+{\thecsvrow & \givenname~\name & \matriculation}%
+
+
+
+
+Другой способ адресации столбцов - использовать их римские номера. Прямая адресация осуществляется с помощью \ csvcoli, \ csvcolii, \ csvcoliii,. , , :
+
+\csvreader[tabular=|r|l|c|,
+table head=\hline & Person & Matr.~No.\\\hline\hline,
+late after line=\\\hline]%
+{test.csv}{}%
+{\thecsvrow & \csvcolii~\csvcoli & \csvcoliii}%
+
+
+И еще один способ присвоения макросов столбцам - использовать арабские числа для назначения:
+
+\csvreader[tabular=|r|l|c|,
+table head=\hline & Person & Matr.~No.\\\hline\hline,
+late after line=\\\hline]%
+{test.csv}{1=\name,2=\firstname,3=\matnumber}%
+{\thecsvrow & \firstname~\name & \matnumber}%
+
+Для повторяющихся приложений синтаксис pgfkeys позволяет создавать собственные стили для согласованного и централизованного дизайна. Следующий пример легко модифицируется для получения более или менее настроек параметров.
+
+\csvset{myStudentList/.style={%
+		tabular=|r|l|c|,
+		table head=\hline & Person & #1\\\hline\hline,
+		late after line=\\\hline,
+		column names={name=\name,givenname=\firstname}
+}}
+\csvreader[myStudentList={Matr.~No.}]{test.csv}{matriculation=\matnumber}%
+{\thecsvrow & \firstname~\name & \matnumber}%
+\hfill%
+\csvreader[myStudentList={Grade}]{test.csv}{grade=\grade}%
+{\thecsvrow & \firstname~\name & \grade}%
+
+
+Кроме того, имена столбцов могут быть установлены с помощью \ csvnames → стр. 11, а определения стилей - с помощью \ csvstyle → стр. 11. При этом последний пример переписывается следующим образом:
+
+\csvnames{myNames}{1=\name,2=\firstname,3=\matnumber,5=\grade}
+\csvstyle{myStudentList}{tabular=|r|l|c|,
+	table head=\hline & Person & #1\\\hline\hline,
+	late after line=\\\hline, myNames}
+\csvreader[myStudentList={Matr.~No.}]{test.csv}{}%
+{\thecsvrow & \firstname~\name & \matnumber}%
+\hfill%
+\csvreader[myStudentList={Grade}]{test.csv}{}%
+{\thecsvrow & \firstname~\name & \grade}%
+
+Строки данных файла CSV также могут быть отфильтрованы. В следующем примере сертификат печатается только для учащихся с оценкой, не равной 5,0.
+
+\csvreader[filter not strcmp={\grade}{5.0}]%
+{test.csv}{1=\name,2=\firstname,3=\matnumber,4=\gender,5=\grade}%
+{\begin{center}\Large\bfseries Certificate in Mathematics\end{center}
+	\large\ifcsvstrcmp{\gender}{f}{Ms.}{Mr.}
+	\firstname~\name, matriculation number \matnumber, has passed the test
+	in mathematics with grade \grade.\par\ldots\par
+}%
+
