@@ -3,7 +3,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %\documentclass[a4paper,12pt,english,notitlepage,twoside]{report}
 %\documentclass[a4paper,12pt,english,notitlepage]{report}
-\documentclass[a4paper,12pt]{report}
+\documentclass[a4paper,12pt]{article}
 \usepackage{cmap}  % Для копирования из документов PDF
 %
 \usepackage{style/stylefile}  % СТИЛЕВОЙ ФАЙЛ0
@@ -84,7 +84,7 @@ bibencoding=utf8,
 \fancyhead[RE]{\small \NomerDoc} %текст-справа-четные
 %
 
-\fancyfoot[R]{\textcolor{black}{ \textit{{\small }} \rule{3cm}{0.1 mm}}}
+\fancyfoot[R]{\textcolor{black}{ \textit{{\small }} \rule{4cm}{0.1 mm} \hfill \rule{4cm}{0.1 mm}}}
 
 \fancyfoot[CE]{\thepage}% номер страницы слева снизу на четных и справа на нечетных
 \fancyfoot[CO]{\thepage}
@@ -113,8 +113,8 @@ bibencoding=utf8,
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\include{titul/shapOOO_ФАКТ}  % Шапка организации ИП
-
+%\include{titul/shapOOO_ФАКТ}  % Шапка организации ИП
+\include{titul/shapNEOPR}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Вопросы экспертизы}
@@ -150,8 +150,9 @@ bibencoding=utf8,
 
 %%%%%%%%%%%%%%%%  Собственно экспертиза
 
-\subfile{sections/ОСАГОэкспертизаФакт}
-\include{sections/поручение}
-\include{sections/подписка}
+%\subfile{sections/ОСАГОэкспертизаФакт}
+\subfile{sections/исследованиеОборудования}
+%\include{sections/поручение}
+%\include{sections/подписка}
 
 \end{document} 
