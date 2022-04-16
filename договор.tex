@@ -1,3 +1,120 @@
+%% !TEX TS-program = xelatex
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\documentclass[a4paper,12pt,english,notitlepage,twoside]{report}
+\documentclass[a4paper,12pt,english,notitlepage]{report}
+\usepackage{cmap}  % Для копирования из документов PDF
+%
+\usepackage{style/stylefile}  % СТИЛЕВОЙ ФАЙЛ
+
+\usepackage{subfiles}
+\usepackage{fontspec}
+\usepackage[french,latin,english,main=russian]{babel}
+
+\usepackage[backend=biber,
+style=gost-numeric, 
+bibstyle=gost-numeric, 
+citestyle=numeric-comp,
+language=auto,
+sorting=ntvy,
+autolang=other,
+doi=false, 
+eprint=false, 
+isbn=false, 
+movenames=false,
+dashed=false,
+bibencoding=utf8,
+]{biblatex}
+
+\setmainfont{Times New Roman}
+%
+%% Альбомная ориентация страницы
+\SetWatermarkLightness{0.995} % прозрачность
+\SetWatermarkText{ЮРЭКСГРУП//
+	\vspace{15mm}
+	ЮРЕКСГРУП\\
+	\vspace{15mm}
+	ЮРЕКСГРУП} % Текст водяного знака
+\SetWatermarkScale{0.8}
+
+
+\geometry{top=20mm}
+\geometry{bottom=20mm}  
+
+
+\addbibresource{bib/TechnicalExpertise.bib}
+
+\DeclareSourcemap{
+	\maps[datatype=bibtex]{
+		\map{
+			\step[fieldsource=langid, match=russian, final]
+			\step[fieldset=presort, fieldvalue={a}]
+		}
+		\map{
+			\step[fieldsource=langid, notmatch=russian, final]
+			\step[fieldset=presort, fieldvalue={z}]
+		}
+	}
+}
+
+%
+\begin{document}
+	%	
+	\def\цена{15000}
+	%
+	\pagestyle{plain}
+	
+	
+	
+	\pagestyle{fancy}
+	\frenchspacing 
+	\fancyhf{}
+	\fancyhead{}
+	\fancyfoot{} 
+	%
+	%
+	%\fancyhead[LE]{ }
+	%\fancyhead{}
+	%\fancyhead[LO, RE]{\footnotesize \textcolor{ForestGreen} {Акт экспертного исследования № \NomerDoc\, от \окончено}} 
+	%
+	%
+	%\fancyhead[LE,RO]{\thepage} номер страницы слева сверху на четных и справа на нечетных
+	%\fancyhead[CO]{текст-центр-нечетные}%текст-центр-нечетные
+	\fancyhead[RE]{ } %текст-слева-нечетные
+	\fancyhead{}
+	%\fancyhead[CE]{текст-центр-четные} %текст-центр-четные
+	\fancyhead[RO]{\small {Заключение эксперта \NomerDoc}} %текст-справа-четные
+	\fancyhead[RE]{\small \NomerDoc} %текст-справа-четные
+	%
+	
+	\fancyfoot[R]{\textcolor{black}{ \textit{{\small }} \rule{3cm}{0.1 mm}}}
+	
+	\fancyfoot[CE]{\thepage}% номер страницы слева снизу на четных и справа на нечетных
+	\fancyfoot[CO]{\thepage}
+	
+	
+	%\fancyfoot[RO]{}%текст-центр-нечетные
+	%\fancyfoot[LO]{текст2-слева-четные} %текст2-слева-нечетные
+	%\fancyfoot[CE]{\thepage} %текст-центр-четные
+	%\fancyfoot[CO]{\thepage} %текст-справа-четные
+	%
+	\renewcommand{\headrulewidth}{0 mm}% толщина отделяющей полоски сверху
+	%%  Сделаем полоску цветной (красной)
+	\renewcommand{\headrule}{\hbox to\headwidth{%
+			\color{red}\leaders\hrule height \headrulewidth\hfill}}
+	
+	\renewcommand{\footrulewidth}{0 mm}% толщина отделяющей полоски снизу
+	\futurelet\TMPfootrule\def\footrule{{\color{black}\TMPfootrule}}
+	%
+	%L, C, R — лево, центр и право.
+	%E, O — четные и нечетные страницы.
+	%
+	\thispagestyle{empty}  %  Не нумеровать первую страницу
+	%
+	\input{data}
+	%
+	\input{pereopr}
+
 \begin{center}
     	\textbf{{\large  ДОГОВОР № \NomerDoc}}\\
     	 на проведение экспертного исследования
@@ -16,7 +133,7 @@
 	\textbf{1. ПРЕДМЕТ ДОГОВОРА}
 \end{center}
 \vspace{-3mm}
- \noindent1.1. Заказчик поручает, а Исполнитель принимает на себя проведение экспертного исследования технического состояния коробки перемены передач,  установленной на автомобиле \тс \, VIN \vin.
+ \noindent1.1. Заказчик поручает, а Исполнитель принимает на себя проведение экспертного исследования технического состояния  автомобиля \тс \, VIN \vin.
 
 
 \begin{center}
@@ -24,7 +141,7 @@
 \end{center}
 \vspace{-3mm}
  \noindent2.1. Исполнитель и Заказчик согласовывают сумму договорной цены, которую оплачивает Заказчик   за проведение экспертного исследования, указанную в п. 1.1. настоящего договора.\\ 
-2.2. Сумма договорной цены составляет {XXXXXX} рублей, НДС не предусмотрен в силу применения Исполнителем упрощенной системы налогообложения.\\
+2.2. Сумма договорной цены составляет \цена~(\!\!\!\числопрописью{\цена}\!\!\!) рублей, НДС не предусмотрен в силу применения Исполнителем упрощенной системы налогообложения.\\
 2.3. Оплата осуществляется в течение 3 (Трех) банковских дней на расчетный счет Исполнителя, по счету, который Исполнитель передает Заказчику.
 
 
@@ -82,3 +199,5 @@ E-mail: 4516611@gmail.com  Тел. +79184516611 }
 \vspace{28mm}
 \hbox to 6cm{\rule{40mm}{0.1mm} / ХХХХ /   }}
                                        
+                                       
+\end{document} 
