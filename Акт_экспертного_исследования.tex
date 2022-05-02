@@ -7,46 +7,6 @@
 %
 \usepackage{style/stylefile}  % СТИЛЕВОЙ ФАЙЛ
 
-\usepackage{subfiles}
-\usepackage{fontspec}
-\usepackage{libertine}
-\usepackage[french,latin,english,main=russian]{babel}
-
-\usepackage[backend=biber,
-style=gost-numeric, 
-bibstyle=gost-numeric, 
-citestyle=numeric-comp,
-language=auto,
-sorting=ntvy,
-autolang=other,
-doi=false, 
-eprint=false, 
-isbn=false, 
-movenames=false,
-dashed=false,
-bibencoding=utf8,
-]{biblatex}
-
-\setmainfont{Times New Roman}
-
-\usepackage{lipsum}  
-
-\usepackage{subfiles}
-
-%
-%% Альбомная ориентация страницы
-\SetWatermarkLightness{0.995} % прозрачность
-\SetWatermarkText{ЮРЭКСГРУП//
-	\vspace{15mm}
-ЮРЕКСГРУП\\
-\vspace{15mm}
-ЮРЕКСГРУП} % Текст водяного знака
-\SetWatermarkScale{0.8}
-
-                                   
-\geometry{top=20mm}
-\geometry{bottom=20mm}  
-
 \addbibresource{bib/TechnicalExpertise.bib}
 
 \DeclareSourcemap{
@@ -62,62 +22,15 @@ bibencoding=utf8,
 	}
 }
 
-%
+
 \begin{document}
-%	
-%\sloppy  % если не заработает, удалить
-%
-\pagestyle{plain}
 
-
-
-\pagestyle{fancy}
-\frenchspacing 
-\fancyhf{}
-\fancyhead{}
-\fancyfoot{} 
-%
-%
-%\fancyhead[LE]{ }
-%\fancyhead{}
-%\fancyhead[LO, RE]{\footnotesize \textcolor{ForestGreen} {Акт экспертного исследования № \NomerDoc\, от \окончено}} 
-%
-%
-%\fancyhead[LE,RO]{\thepage} номер страницы слева сверху на четных и справа на нечетных
-%\fancyhead[CO]{текст-центр-нечетные}%текст-центр-нечетные
-\fancyhead[RE]{ } %текст-слева-нечетные
-\fancyhead{}
-%\fancyhead[CE]{текст-центр-четные} %текст-центр-четные
-\fancyhead[RO]{\small {Заключение эксперта \NomerDoc}} %текст-справа-четные
-\fancyhead[RE]{\small \NomerDoc} %текст-справа-четные
-%
-
-\fancyfoot[R]{\textcolor{black}{ \textit{{\small }} \rule{3cm}{0.1 mm}}}
-
-\fancyfoot[CE]{\thepage}% номер страницы слева снизу на четных и справа на нечетных
-\fancyfoot[CO]{\thepage}
-
-
-%\fancyfoot[RO]{}%текст-центр-нечетные
-%\fancyfoot[LO]{текст2-слева-четные} %текст2-слева-нечетные
-%\fancyfoot[CE]{\thepage} %текст-центр-четные
-%\fancyfoot[CO]{\thepage} %текст-справа-четные
-%
-\renewcommand{\headrulewidth}{0 mm}% толщина отделяющей полоски сверху
-%%  Сделаем полоску цветной (красной)
-\renewcommand{\headrule}{\hbox to\headwidth{%
-		\color{red}\leaders\hrule height \headrulewidth\hfill}}
-
-\renewcommand{\footrulewidth}{0 mm}% толщина отделяющей полоски снизу
-\futurelet\TMPfootrule\def\footrule{{\color{black}\TMPfootrule}}
-%
-%L, C, R — лево, центр и право.
-%E, O — четные и нечетные страницы.
-%
 \thispagestyle{empty}  %  Не нумеровать первую страницу
 %
+\input{колонтитулы}
+\input{var}
 \input{data}
-%
+
 \input{pereopr}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -131,16 +44,15 @@ bibencoding=utf8,
 \subsection{Исходные данные и объекты исследования}
 \subfile{объекты_представленные_на_экспертизу}
 
-
 \subsection{Обстоятельства дела}
 \subfile{обстоятельства_дела}
 
 \subsection{Справочные материалы и нормативные документы}
 \subfile{bib/библиография_суд_ОСАГО}
 
+%\printbibliography
 
 \section{Исследование}
-
 
 \subsection{Термины и определения}
 \subfile{термины_определения}
