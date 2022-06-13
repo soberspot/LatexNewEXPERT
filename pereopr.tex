@@ -1,9 +1,8 @@
-
 % example-image
 
 \renewcommand{\chaptername}{Заключение эксперта}
-\renewcommand{\refname}{Использованные нормативы и источники информации}
-\renewcommand{\bibname}{\large {Использованные нормативы и источники информации}}
+\renewcommand{\refname}{Список использованных источников}
+\renewcommand{\bibname}{\large {Список использованных источников}}
 
 \renewcommand{\epsilon}{\ensuremath{\varepsilon}}
 \renewcommand{\phi}{\ensuremath{\varphi}}
@@ -69,17 +68,16 @@
   
  %%%%%%%%%%%%%%%%   Число прописью
  \newcommand{\числопрописью}[1]
- {
- 	\numnameru{#1}
- }
+ {\numnameru{#1}}
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
- \newcommand{\растянуть}[2]
+%%%%%%%  Увеличить межсимвольный интервал
+%%%%%%%%%
+\newcommand{\растянуть}[2]
 {
  \addfontfeature{LetterSpace=#2}
  {#1}
  \addfontfeature{LetterSpace=0.0}
 }
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %   Заметка на полях  (ремарка)
@@ -157,7 +155,7 @@
 %%%%%%%%%%%%%%%%
 %%%  Переопределение длятаблицы ИСТОРИИ РЕМОНТА и сервисного обслуживания
 
-\newcommand{\ист}[5]{#1 & #2  & #2 & #4   & #5 \\ \hline}
+\newcommand{\ист}[5]{{\footnotesize #1} & {\footnotesize #2} & {\footnotesize #3} & {\footnotesize #4}  & {\footnotesize #5} \\ \hline}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% ПЕРЕОПРЕДЕЛЕНИЕ ДЛЯ ТАБЛИЦЫ с Игдексом и Двумя Столбцами
@@ -230,6 +228,7 @@
 \newcommand{\s}[1]{$S_{\text{повр}} \approx#1\, m^2$}
 
 \newcommand{\угол}[1]{$ #1^\circ $}
+\newcommand{\град}[1]{$ #1^\circ $}
 %%%% Стиль для колонтитулов
 
 \newcommand{\грз}{\grz}
@@ -249,6 +248,7 @@
 \newcommand{\тса}{\tca}
 \newcommand{\тсб}{\tcb}
 \newcommand{\ссылка}{\ref}
+\newcommand{\рис}[1]{Рис. \ref{рис:#1}}
 %\newcommand{}{}
 
 %%%%%%%%%%%%%%%% ПЕРЕОПРЕДЕЛЕНИЕ  "По вопросу"     \повопросу{вопрос}
@@ -261,7 +261,7 @@
 \newcommand{\фото}[2]
 {
     \begin{figure}[H]
-        \center{\includegraphics[width=0.99\textwidth]{#1}}
+        \center{\includegraphics[width=0.85\textwidth]{#1}}
         \caption{\small {#2}}
         \label{рис:#1}
     \end{figure}
@@ -322,7 +322,7 @@
 
 	\caption{#5}
 	\label{рис:#1}
-:\end{figure}}
+\end{figure}}
 
 
 
