@@ -14,6 +14,9 @@
 \SetWatermarkText{ЮРЭКСГРУП} % Текст водяного знака
 \SetWatermarkScale{0.8}  %масштаб
 
+\def\двери{4}
+\def\полис{Без страхового полиса  {\large \чекг}}
+
 \begin{document}
 	\pagestyle{plain}
 	\pagestyle{fancy}
@@ -72,7 +75,7 @@
 \vspace{2mm}
 \noindent Дата осмотра: \osm \hfill Время осмотра:\tm  \\
 \noindent Место осмотра: \,\, \местоосмотра\\
-\noindent Страховой полис: ОСАГО {\large \чек}\,\,КАСКО {\large \чек}\,\,\, \polis\\
+\noindent Страховой полис: ОСАГО {\large \чек}\,\,КАСКО {\large \чек}\,\,\, \polis \полис\\
 \vspace{-2mm}
 \begin{tcolorbox}[title=\textsl{Сведения о транспортном средстве},leftrule=0pt,rightrule=0pt,toprule=0pt,titlerule=0pt,sharp corners,
 	colback=white,colframe=white,coltitle=black,colbacktitle=YellowOrange]
@@ -91,7 +94,7 @@
 			%	\item[Объем двигателя] \hfill 1328 $ \text{см}^3 $
 			\item[КПП] \hfill \кпп
 			\item[Тип кузова] \hfill  \типкузова
-			\item[Количество дверей] \hfill 5 
+			\item[Количество дверей] \hfill \двери 
 			%	\item[VDS] --
 		\end{description}
 	}   %\hspace{20mm} %
@@ -111,7 +114,7 @@
 \vspace{15mm}
 
 \noindent Собственник ТС: \владелец\\
-Доверенное лицо: \заказчик\\
+Доверенное лицо: \\
 Адрес собственника ТС, доверенного лица: \адресвладельца\\
 Другие заинтересованные лица: \\
 
@@ -129,7 +132,7 @@
 	Дата ДТП: \датадтп\\
 %	Место ДТП: \\
 	Участники ДТП:\\
-	Транспортное средство: \тс\\ 
+	Транспортное средство: \тс\, регистрационный знак \грз\\ 
 	Транспортное средство: \tca\\
 \end{tcolorbox}
 \vspace{-7mm}
