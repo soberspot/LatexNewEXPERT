@@ -1,7 +1,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \ProvidesPackage{style/stylefile}
 
-
 \RequirePackage{csvsimple}
 \usepackage{ragged2e}
 \usepackage{microtype}
@@ -15,13 +14,10 @@
 %
 \RequirePackage{fontawesome5}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 \usepackage{mathtools}                    
 \usepackage{amsmath}
-%\usepackage{unicode-math} 
 \usepackage{amssymb}  
 %
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 \RequirePackage{keyval}
@@ -48,25 +44,13 @@
 \usepackage{array,tabularx,tabulary,booktabs,longtable} % Дополнительная работа с таблицами
 %
 \usepackage{multirow} % Слияние строк в таблице
-
 \usepackage{makecell} % Перенос текста в таблице
 %
 %%%% Программирование
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 %
 \usepackage{etoolbox} % логические операторы
 %
-\usepackage{geometry} % Простой способ задавать поля
-\geometry{top=20mm}
-\geometry{bottom=20mm}
-\geometry{left=25mm}
-\geometry{right=20mm}
-\usepackage{setspace} % Интерлиньяж  
-%\onehalfspacing % Интерлиньяж 1.5
-% произвольный интервал
-\setstretch{1.25}
 %
 % Гиперссылки  %%  pagebackref = true  не  проверен
 \usepackage[unicode=true, pdfusetitle, pagebackref=true bookmarks=true,bookmarksnumbered=false,bookmarksopen=false, breaklinks=false,pdfborder={0 0 1},backref=false,colorlinks=true]{hyperref}
@@ -151,13 +135,9 @@
 \usepackage{subfiles}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
-
 \usepackage{fp}
 \usepackage{subfiles}
-\usepackage{fontspec}
 \usepackage{libertine}
-\usepackage[french,latin,english,main=russian]{babel}
 
 \usepackage[backend=biber,
 style=gost-numeric, 
@@ -176,14 +156,9 @@ dashed=false,
 bibencoding=utf8,
 ]{biblatex}
 
-\setmainfont{Times New Roman}
-
 \usepackage{subfiles}
 
 %% Альбомная ориентация страницы
 \SetWatermarkLightness{1} % прозрачность
 \SetWatermarkText{  } % Текст водяного знака
 \SetWatermarkScale{0.8}
-
-\geometry{top=20mm}
-\geometry{bottom=20mm}  

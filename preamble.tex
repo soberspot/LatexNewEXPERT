@@ -1,10 +1,24 @@
 % !TEX TS-program = xelatex
 % !BIB TS-program = biber
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%\documentclass[a4paper,12pt,english,notitlepage,twoside]{report}
-%\documentclass[a4paper,12pt,english,notitlepage]{report}
-\documentclass[a4paper,12pt]{article}
-\usepackage{cmap}  % Для копирования из документов PDF
+\documentclass[a4paper]{article}
+\usepackage[english,russian]{babel} 
+\usepackage{fontspec}
+\defaultfontfeatures{Ligatures={TeX},Renderer=Basic} 
+\setmainfont[Ligatures={TeX, Historic}]{Times New Roman}
+\usepackage[left=20mm, top=20mm, right=10mm, bottom=20mm,  footskip=10mm]{geometry} 
+\usepackage[fontsize=12pt]{scrextend}
+\usepackage{setspace}
+\onehalfspacing % Полутерный интервал
+%\singlespacing % Одиночный интервал
+%\doublespacing % Двойной интервал
+%\setstretch{1.25} % Произвольный интервал 
+\usepackage{sectsty}
+%\allsectionsfont{\centering} - Все разделы по середине 
+\sectionfont{\centering\fontspec{Times New Roman}} 
+\subsectionfont{\centering\fontspec{Times New Roman}} 
+\subsubsectionfont{\raggedright\fontspec{Arial}} 
+
 
 \usepackage{style/stylefile}  % СТИЛЕВОЙ ФАЙЛ
 
