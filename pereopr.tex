@@ -225,7 +225,27 @@
 
 
 % Площадь пореждений, М2
-\newcommand{\s}[1]{$S_{\text{повр}} \approx#1\, m^2$}
+\newcommand{\s}[1]{$S_{\text{повреждений}} \approx#1\, m^2$}
+
+
+% Подпись
+\newcommand{\подпись}[2]{\noindent #1    \hfill     \rule{4cm}{0.1 mm} \,\,\,  #2\\}
+
+
+\newcommand{\подписьспечатью}{\begin{figure}[H]
+		\begin{subfigure}{0.6\textwidth}
+			\includegraphics[width=48mm]{п2} 
+		\end{subfigure}
+		\begin{subfigure}{0.4\textwidth}
+			\includegraphics[width=40mm]{п3}
+		\end{subfigure}
+	\end{figure}
+	\vspace{-54mm}
+	\noindent \подпись{Эксперт-техник}{Мраморнов А.В.}
+	\relax
+	\vspace{35mm}}
+
+
 
 \newcommand{\угол}[1]{$ #1^\circ $}
 \newcommand{\град}[1]{$ #1^\circ $}
