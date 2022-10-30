@@ -1,6 +1,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \ProvidesPackage{style/stylefile}
 
+\RequirePackage[labelsep=period, centerlast, small]{caption}  % для того чтобы заменить ":" на "." после слова "рис."; подписи рисунков центрируются и печатаются размером small
 \RequirePackage{csvsimple}
 \usepackage{ragged2e}
 \usepackage{microtype}
@@ -162,3 +163,7 @@ bibencoding=utf8,
 \SetWatermarkLightness{1} % прозрачность
 \SetWatermarkText{  } % Текст водяного знака
 \SetWatermarkScale{0.8}
+
+
+\RequirePackage{datetime}
+\RequirePackage{makeidx}
