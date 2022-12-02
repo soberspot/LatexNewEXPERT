@@ -1,6 +1,6 @@
 % example-image
 
-\renewcommand{\chaptername}{Заключение эксперта}
+%\renewcommand{\chaptername}{Заключение эксперта}
 \renewcommand{\refname}{\large{Справочные материалы и нормативные документы}}
 \renewcommand{\bibname}{\footnotesize{Список использованных источников}}
 
@@ -365,6 +365,21 @@
 
 \end{figure}}
 
+
+\newcommand{\смарт}[4]{\begin{figure}[H]
+		\centering
+		\parbox[t]{0.49\textwidth}
+		{\centering
+			\includegraphics[width=80mm,  height=140mm]{#1}
+			\caption{\footnotesize {#2}}
+			\label{рис:#1}}
+		\hfil \hfil
+		\parbox[t]{0.49\textwidth}
+		{\centering
+			\includegraphics[width=80mm,  height=140mm]{#3}
+			\caption{\footnotesize {#4}}
+			\label{рис:#3}}
+\end{figure}}
 
 %%%%% ФОТО РЯДОМ С ТЕКСТОМ
 %

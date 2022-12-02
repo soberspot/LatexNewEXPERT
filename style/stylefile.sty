@@ -1,22 +1,45 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\ProvidesPackage{style/stylefile}
+\ProvidesPackage{stylefile}
 
+\usepackage{fontspec}   
 \RequirePackage[labelsep=period, centerlast, small]{caption}  % для того чтобы заменить ":" на "." после слова "рис."; подписи рисунков центрируются и печатаются размером small
 \RequirePackage{csvsimple}
+\RequirePackage{subfiles}
 \usepackage{ragged2e}
 \usepackage{microtype}
 
 \justifying
+%\sloppy
 \tolerance=500
 \hyphenpenalty=10000
 \emergencystretch=3em
 \usepackage{cmap}
 \usepackage{indentfirst} 
 %
-\RequirePackage{fontawesome5}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{ifxetex}
+% select kind of TeX
+\ifxetex % for xetex
+%\usepackage[no-math]{fontspec}
+%\usepackage{xltxtra}
+\usepackage{polyglossia}[indentfirst=true]
+\setdefaultlanguage[spelling=modern]{russian}
+\setotherlanguage{english}
+\defaultfontfeatures{Ligatures={TeX},Renderer=Basic}
+\setmainfont[Scale=1]{Times New Roman} % scale to 14bp
+\setsansfont[Scale=.85]{Arial}
+\setmonofont[Scale=.8]{Courier New}
+\newfontfamily\cyrillicfonttt[Script=Cyrillic,Scale=.85]{Arial}
+\else 
+\usepackage[warn]{mathtext}	
+\usepackage[T2A]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english,russian]{babel}
+\fi
 \usepackage{mathtools}                    
 \usepackage{amsmath}
+%\usepackage{unicode-math} 
 \usepackage{amssymb}  
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -24,10 +47,12 @@
 \RequirePackage{keyval}
 \RequirePackage{url}
 \RequirePackage[dvips]{graphicx}
+%\RequirePackage{fancyvrb}
 %
 \usepackage{csquotes}
 %
 %
+%\usepackage{subfigure}
 \usepackage{subcaption}
  % Для вставки рисунков
 \graphicspath
@@ -37,29 +62,40 @@
     {./images/pdf/}
     {./images/png/}
     {./images/examples/}
+  %  {./images/}
+ %   {./foto/}
 }
-\DeclareGraphicsExtensions{.pdf,.png,.jpg}
+
 \usepackage[leftcaption]{sidecap}
 %
 %%% Работа с таблицами
 \usepackage{array,tabularx,tabulary,booktabs,longtable} % Дополнительная работа с таблицами
 %
 \usepackage{multirow} % Слияние строк в таблице
-\usepackage{makecell} % Перенос текста в таблице
 %
 %%%% Программирование
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{pythontex}
 %
 \usepackage{etoolbox} % логические операторы
+%\usepackage{csquotes} % кавычки
 %
+\usepackage{geometry} % Простой способ задавать поля
+\geometry{top=20mm}
+\geometry{bottom=20mm}
+\geometry{left=25mm}
+\geometry{right=20mm}
+\usepackage{setspace} % Интерлиньяж  
+%\onehalfspacing % Интерлиньяж 1.5
+% произвольный интервал
+\setstretch{1.25}
 %
 % Гиперссылки  %%  pagebackref = true  не  проверен
 \usepackage[unicode=true, pdfusetitle, pagebackref=true bookmarks=true,bookmarksnumbered=false,bookmarksopen=false, breaklinks=false,pdfborder={0 0 1},backref=false,colorlinks=true]{hyperref}
 %
 % Цвет гиперссылок
 \usepackage[usenames,dvipsnames,svgnames,table,rgb]{xcolor}
-\definecolor{lightgray}{gray}{0.9}
-\usepackage{nicematrix}
 \usepackage{tcolorbox}
 %
 \definecolor{linkcolor}{HTML}{000099} % цвет ссылок
@@ -80,6 +116,12 @@
 }
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%############
+\usepackage[
+backend=biber, 
+sorting=nyt,
+bibstyle=gost-authoryear,
+citestyle=gost-authoryear
+]{biblatex}
 %
 \usepackage{multicol} % Несколько колонок
 % Устанавивам размер отступа абзаца
@@ -90,8 +132,9 @@
 %%#####################################
 % Картинки по разделам
 \usepackage{float}
+%\usepackage{ floatrow}
 \usepackage[section,above,below]{placeins}
-\usepackage{afterpage}
+\usepackage{afterpage,placeins}
 \usepackage{tikz}       % Работа с графикой
 \usepackage{pgfplots}
 \pgfplotsset{compat=newest}
@@ -120,6 +163,7 @@
 \usepackage{marginnote}
 \usepackage{emptypage}
 \usepackage{todonotes}
+%\usepackage{layouts}
 \usepackage{lastpage}
 
 \newlist{todolist}{itemize}{2}
@@ -128,42 +172,6 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  ВОДЯНОЙ ЗНАК
 \usepackage{draftwatermark} 
-\usepackage{numnameru}
-\usepackage[ruled,section]{algorithm}
-\usepackage[keeptemps, gobble=auto]{pythontex}
-\usepackage{xparse}
-\usepackage{filecontentsdef}
-\usepackage{subfiles}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\usepackage{fp}
-\usepackage{subfiles}
-\usepackage{libertine}
-
-\usepackage[backend=biber,
-style=gost-numeric, 
-bibstyle=gost-numeric, 
-citestyle=numeric-comp,
-%citestyle=alphabetic-verb,
-%bibstyle=gost-alphabetic,
-language=auto,
-sorting=ntvy,
-autolang=other,
-doi=false, 
-eprint=false, 
-isbn=false, 
-movenames=false,
-dashed=false,
-bibencoding=utf8,
-]{biblatex}
-
-\usepackage{subfiles}
-
-%% Альбомная ориентация страницы
-\SetWatermarkLightness{1} % прозрачность
-\SetWatermarkText{  } % Текст водяного знака
-\SetWatermarkScale{0.8}
 
 
-\RequirePackage{datetime}
-\RequirePackage{makeidx}
+
