@@ -1,4 +1,6 @@
-%% !TEX TS-program = xelatex
+% !TEX TS-program = xelatex
+% !BIB TS-program = biber
+%
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \documentclass[a4paper,12pt]{article}
@@ -35,8 +37,8 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%\include{titul/shapOOO_ФАКТ}  % Шапка организации ИП
-\include{titul/shapNEOPR}
+\include{titul/shapOOO_ФАКТ}  % Шапка организации ИП
+%\include{titul/shapNEOPR}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Вопросы экспертизы}
@@ -51,10 +53,10 @@
 \subsection{Обстоятельства дела}
 \subfile{обстоятельства_дела}
 
-\subsection{Справочные материалы и нормативные документы}
-\subfile{bib/библиография_суд_ОСАГО}
+%\subsection{Справочные материалы и нормативные документы}
+%\subfile{bib/библиография_суд_ОСАГО}
 
-%\printbibliography
+\printbibliography
 
 \section{Исследование}
 
