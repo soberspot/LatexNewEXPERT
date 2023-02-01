@@ -247,6 +247,18 @@
 
 
 
+\newcommand{\podpis}[2]{
+	\parbox[b]{4cm}{#1}
+	\hspace{2.5cm}
+	\tikz[baseline=2pt]{\draw(0,0) to node[below=-2pt]{\scriptsize подпись}(3.5cm,0);}
+	\hspace{1.5cm}
+	\tikz[baseline=2pt]{
+		\def\familywidth{\textwidth-4cm-2.5cm-3.5cm-1.5cm-10pt}
+		\draw(0,0) to node[below=-2pt]{\scriptsize инициалы и фамилия}(\familywidth,0);
+		\node[anchor=west](f) at (5pt,7pt){#2};
+	}
+}
+
 \newcommand{\угол}[1]{$ #1^\circ $}
 \newcommand{\град}[1]{$ #1^\circ $}
 %%%% Стиль для колонтитулов

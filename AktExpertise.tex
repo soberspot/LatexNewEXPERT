@@ -1,38 +1,11 @@
-% !TeX document-id = {4aedce0f-0b34-4784-8b9c-b3d45b9207ce}
-% !TEX TS-program = xelatex
-% !BIB TS-program = biber
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%\documentclass[a4paper,12pt,english,notitlepage,twoside]{report}
-%\documentclass[a4paper,12pt,english,notitlepage]{report}
-\documentclass[a4paper,12pt]{article}
-\usepackage{cmap}  % Для копирования из документов PDF
-%
-\usepackage{style/stylefile}  % СТИЛЕВОЙ ФАЙЛ
-
-\addbibresource{bib/TechnicalExpertise.bib}
-
-\DeclareSourcemap{
-	\maps[datatype=bibtex]{
-		\map{
-			\step[fieldsource=langid, match=russian, final]
-			\step[fieldset=presort, fieldvalue={a}]
-		}
-		\map{
-			\step[fieldsource=langid, notmatch=russian, final]
-			\step[fieldset=presort, fieldvalue={z}]
-		}
-	}
-}
-
+\input{preamble}
 
 \begin{document}
 
 \thispagestyle{empty}  %  Не нумеровать первую страницу
-%
 \input{колонтитулы}
 \input{var}
 \input{data}
-
 \input{pereopr}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -72,8 +45,6 @@
 \subfile{ограничения}
 
 %%%%%%%%%%%%%%%%  Собственно экспертиза
-
-
 
 \subfile{sections/исследование_недостатков_ТС}
 
