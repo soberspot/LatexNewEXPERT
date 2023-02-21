@@ -1,0 +1,24 @@
+\documentclass{article}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage[most]{tcolorbox}
+
+\begin{document}    
+	\thispagestyle{empty}   
+	\begin{figure}[h]   
+		\begin{tcbitemize}[raster columns=4,colback=cyan!20,colframe=cyan]
+			\tcbitem \includegraphics[width=\linewidth]{example-image} Sub (a)
+			\tcbitem \includegraphics[width=\linewidth]{example-image} (b)
+			\tcbitem \includegraphics[width=\linewidth]{example-image} (b)
+			\tcbitem \includegraphics[width=\linewidth]{example-image} (d)
+			\tcbitem \includegraphics[width=\linewidth]{example-image} (e)
+			\tcbitem \includegraphics[width=\linewidth]{example-image} (f)
+			\tcbitem \includegraphics[width=\linewidth]{example-image} (g)
+			\tcbitem \includegraphics[width=\linewidth]{example-image} (h)
+		\end{tcbitemize}
+		\begin{tcbitemize}[raster columns=2,colback=white,colframe=cyan]
+			\tcbitem \includegraphics[width=\linewidth]{example-image} (i)
+			\tcbitem \includegraphics[width=\linewidth]{example-image} (l)
+		\end{tcbitemize}
+		\caption{A set of figures}
+	\end{figure}    
+\end{document}
