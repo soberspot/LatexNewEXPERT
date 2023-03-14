@@ -30,7 +30,7 @@
 
 
 %%%%%%%%%%%%%%%%%%%%%%%  Подсчет строк в таблице
-%\newcounter{rownum}
+\newcounter{rownum}
 \setcounter{rownum}{0}
 \newcommand{\Rownum}{\stepcounter{rownum}%
 \arabic{rownum}}
@@ -284,11 +284,16 @@
 %\newcommand{}{}
 
 %%%%%%%%%%%%%%%% ПЕРЕОПРЕДЕЛЕНИЕ  "По вопросу"     \повопросу{вопрос}
-\newcommand{\повопросу}[1]{\,{\renewcommand\baselinestretch{0.86}\small\normalsize
-\subsection{\underline{По  вопросу}\,\,\textbf{\small{<<#1>>}}}}
-\renewcommand\baselinestretch{1.2}\small\normalsize}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\newcommand{\повопросу}[1]{\,{\renewcommand\baselinestretch{0.86}\small\normalsize
+%\subsection{\underline{По  вопросу}\,\,\textbf{\small{#1>>}}}}
+%\renewcommand\baselinestretch{1.2}\small\normalsize}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\newcommand{\повопросу}[1]
+{\noindent{\small \underline{\textbf{По  вопросу \,}  }{\textbf{#1}}}\\}
+
+
+Тест Тест
 
 \newcommand{\фото}[2]
 {

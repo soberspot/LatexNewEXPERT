@@ -2,13 +2,9 @@
 % !BIB TS-program = biber
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\documentclass[a4paper,12pt]{article}
-\usepackage{cmap}  % Для копирования из документов PDF
 
-\usepackage{style/stylefile}  % СТИЛЕВОЙ ФАЙЛ0
-
-
-\addbibresource{bib/TechnicalExpertise.bib}
+\input{preamble}
+%
 
 \DeclareSourcemap{
 	\maps[datatype=bibtex]{
@@ -27,6 +23,7 @@
 \SetWatermarkLightness{0.99} % прозрачность
 \SetWatermarkText{ООО <<ФАКТ>>} % Текст водяного знака
 \SetWatermarkScale{0.8}  %масштаб
+
 
 \begin{document}
 
@@ -77,7 +74,7 @@
 %%%%%%%%%%%%%%%%  Собственно экспертиза
 
 %\subfile{sections/ОСАГОэкспертиtзаФакт}
-%\subfile{sections/исследование_недостатков_ТС}
+\subfile{sections/исследование_недостатков_ТС}
 \subfile{sections/исследованиеОборудования}
 %\include{sections/поручение}
 %\include{бло}
