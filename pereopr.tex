@@ -13,6 +13,23 @@
 \renewcommand{\geq}{\ensuremath{\geqslant}}
 \renewcommand{\emptyset}{\varnothing}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%
+\makeatletter
+\newenvironment{pyitemize}
+{\def\@noitemerr{}\itemize}
+{\enditemize}
+\makeatother
+
+\newcommand{\test}[2]{%
+	\begin{pyitemize}
+		\pyc{strs = u"#1".split(u"#2");}
+		\pyc{for s in strs: print("\item " + s);}
+	\end{pyitemize}
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%   ПРОИЗВОЛЬНЫЙ СЧЕТЧИК
 \newcounter{@nnnn}  % задаём имя счёчика 
 \setcounter{@nnnn}{0}  % устанавливаем его первое значение
@@ -30,7 +47,7 @@
 
 
 %%%%%%%%%%%%%%%%%%%%%%%  Подсчет строк в таблице
-\newcounter{rownum}
+%\newcounter{rownum}
 \setcounter{rownum}{0}
 \newcommand{\Rownum}{\stepcounter{rownum}%
 \arabic{rownum}}
@@ -225,7 +242,7 @@
 
 
 % Площадь пореждений, М2
-\newcommand{\s}[1]{$S_{\text{повреждений}} \approx#1\, m^2$}
+%\newcommand{\s}[1]{$S_{\text{повреждений}} \approx#1\, m^2$}
 
 
 % Подпись
