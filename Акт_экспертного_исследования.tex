@@ -1,28 +1,4 @@
-
-%% !TEX TS-program = xelatex
-%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%\documentclass[a4paper,12pt,english,notitlepage,twoside]{report}
-\documentclass[a4paper,12pt,english,notitlepage]{report}
-\usepackage{cmap}  % Для копирования из документов PDF
-%
-\usepackage{style/stylefile}  % СТИЛЕВОЙ ФАЙЛ
-
-\addbibresource{bib/TechnicalExpertise.bib}
-
-\DeclareSourcemap{
-	\maps[datatype=bibtex]{
-		\map{
-			\step[fieldsource=langid, match=russian, final]
-			\step[fieldset=presort, fieldvalue={a}]
-		}
-		\map{
-			\step[fieldsource=langid, notmatch=russian, final]
-			\step[fieldset=presort, fieldvalue={z}]
-		}
-	}
-}
-
+\input{preamble}
 
 \begin{document}
 

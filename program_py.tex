@@ -1,0 +1,45 @@
+\begin{pycode}	
+from datetime import timedelta, datetime
+dat = str(data_begin)
+# Комментарий
+dw = datetime.strptime(dat, "%d.%m.%Y")
+mid_days = dw + timedelta(17)
+in_y_days = dw + timedelta(14)
+data_preduprezd = mid_days.strftime("%d.%m.%Y")
+data_ispolnenya = in_y_days.strftime("%d.%m.%Y")
+\end{pycode}
+%\py{dat}\\
+%\py{data_ispolnenya}\\
+%\py{data_preduprezd}\\
+
+%% Закоментирован работающий код
+%\begin{pygments}{python}
+%    def func(var):
+%    return var**2
+%\end{pygments}
+%
+%
+%\begin{Verbatim}[commandchars=\\\{\},
+%	mathescape]
+%	Verbatim $x^2 + f_\text{sub}(x) = g''(x)$
+%\end{Verbatim}
+%
+%\begin{Verbatim}[numbers=left,
+%	highlightlines={1, 3-4}]
+%	First line
+%	Second line
+%	Third line
+%	Fourth line
+%	Fifth line
+%\end{Verbatim}
+%
+%
+%\begin{pycode}
+%import os
+%
+%with open('sometexfile.tex', 'w', encoding='utf-8') as file:
+%    file.write('\\documentclass{article}\n')
+%    file.write('\\begin{document}\n')
+%    file.write('Hello Palo Alto!\n')
+%    file.write('\\end{document}\n')
+%\end{pycode}
