@@ -1,11 +1,10 @@
-% !TeX document-id = {4aedce0f-0b34-4784-8b9c-b3d45b9207ce}
 % !TEX TS-program = xelatex
 % !BIB TS-program = biber
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \documentclass[a4paper]{article}
-\usepackage{cmap}
-\usepackage[english,russian]{babel} 
-\usepackage{fontspec}
+\usepackage[utf8]{inputenc}  % Кодировка исходного текста
+\usepackage{polyglossia}    %для русского языка
+\usepackage[T2A]{fontenc}
 \defaultfontfeatures{Ligatures={TeX},Renderer=Basic} 
 \setmainfont[Ligatures={TeX, Historic}]{Times New Roman}
 \usepackage[left=20mm, top=20mm, right=10mm, bottom=20mm,  footskip=10mm]{geometry} 
@@ -19,12 +18,12 @@
 %\allsectionsfont{\centering} - Все разделы по середине 
 \sectionfont{\centering\fontspec{Times New Roman}} 
 \subsectionfont{\centering\fontspec{Times New Roman}} 
-\subsubsectionfont{\raggedright\fontspec{Arial}} 
+\subsubsectionfont{\raggedright\fontspec{Times New Roman}} 
 
 
 \usepackage{style/stylefile}  % СТИЛЕВОЙ ФАЙЛ
-
-
+\usepackage{duckuments}
+%\usepackage[export]{adjustbox}
 
 \addbibresource{C:/BibLatex/TechnicalExpertise.bib}
 
@@ -40,9 +39,3 @@
 		}
 	}
 }
-
-
-%%%%%%%%%%%%%%%%%%%  Водяной знак  %% пакет  \usepackage{draftwatermark}
-\SetWatermarkLightness{0.99} % прозрачность
-\SetWatermarkText{ООО <<ЮРЕКСРУПП>>} % Текст водяного знака
-\SetWatermarkScale{0.8}  %масштаб
