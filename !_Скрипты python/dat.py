@@ -1,7 +1,35 @@
 import xml.etree.ElementTree as ET
+import zipfile
+from tkinter import filedialog
+import tkinter as tk
 
-with open("vxs.xml", "r", encoding="UTF-8") as f:
-    xml_string = f.read()
+# создаем окно приложения
+root = tk.Tk()
+root.withdraw()
+
+# открываем диалоговое окно для выбора файла .docx
+file_path = filedialog.askopenfilename(filetypes=[("vxs", "*.zip")])
+
+# если файл был выбран, выполняем конвертацию
+if file_path:
+    zip_path = file_path  # Замените на путь к вашему ZIP-архиву
+    file_to_open = 'vxs.xml'  # Замените на имя файла, который вы хотите открыть
+
+
+with zipfile.ZipFile(zip_path, 'r') as zip_file:
+    for file_info in zip_file.infolist():
+        if file_info.filename.count('/') == 3:  # Замените на нужный уровень вложенности
+            if file_info.filename.endswith(file_to_open):
+                with zip_file.open(file_info) as file:
+                    xml_string = file.read().decode('utf-8')  # Чтение содержимого файла в формате UTF-8
+                break
+
+# with zipfile.ZipFile(zip_path, 'r') as zip_file:
+#     with zip_file.open(file_to_open) as file:
+        # content = file.read().decode('utf-8')  # Чтение содержимого файла в формате UTF-8
+
+# with open("vxs.xml", "r", encoding="UTF-8") as f:
+#     xml_string = f.read()
 
 root = ET.fromstring(xml_string)
 namespace = {"ns2": "http://www.dat.de/vxs"}
@@ -17,8 +45,11 @@ for dossier in root.findall(".//ns2:RepairPosition", namespace):
     if repear_type == "repeare":
         print("Ремонтировать " + parts_name)
         # ff.write(dossier_id + parts_name + "\\n")
-
+print("Заменяемые детали: ")
 for dossier in root.findall(".//ns2:MaterialPosition", namespace):
     part_namber = dossier.find("ns2:DATPartNumber", namespace).text
     parts_name = dossier.find("ns2:Description", namespace).text
-    print(parts_name + "    " +  part_namber)
+    print("Деталь:   " + parts_name.ljust(35) + " Артикул:   " + part_namber)
+
+
+# print(xml_string)
