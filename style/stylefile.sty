@@ -2,24 +2,21 @@
 \ProvidesPackage{stylefile}
 
 \usepackage{fontspec}   
-\RequirePackage[labelsep=period, centerlast, small]{caption}  % для того чтобы заменить ":" на "." после слова "рис."; подписи рисунков центрируются и печатаются размером small
+
 \RequirePackage{csvsimple}
 \RequirePackage{subfiles}
 \usepackage{ragged2e}
 \usepackage{microtype}
 \RequirePackage{fontawesome5}
 \justifying
-%\sloppy
 \tolerance=500
 \hyphenpenalty=10000
 \emergencystretch=3em
 \usepackage{cmap}
 \usepackage{indentfirst} 
 %
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\usepackage{ifxetex}
-% select kind of TeX
+\usepackage{ifxetex} % select kind of TeX
 \ifxetex % for xetex
 %\usepackage[no-math]{fontspec}
 %\usepackage{xltxtra}
@@ -39,7 +36,6 @@
 \fi
 \usepackage{mathtools}                    
 \usepackage{amsmath}
-%\usepackage{unicode-math} 
 \usepackage{amssymb}  
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -63,9 +59,7 @@
     {./images/pdf/}
     {./images/png/}
     {./images/examples/}
-  %  {./images/}
- %   {./foto/}
-}
+ }
 
 \usepackage[leftcaption]{sidecap}
 %
@@ -82,16 +76,7 @@
 \usepackage{etoolbox} % логические операторы
 %\usepackage{csquotes} % кавычки
 %
-\usepackage{geometry} % Простой способ задавать поля
-\geometry{top=20mm}
-\geometry{bottom=20mm}
-\geometry{left=25mm}
-\geometry{right=20mm}
-\usepackage{setspace} % Интерлиньяж  
-%\onehalfspacing % Интерлиньяж 1.5
-% произвольный интервал
-\setstretch{1.25}
-%
+
 % Гиперссылки  %%  pagebackref = true  не  проверен
 \usepackage[unicode=true, pdfusetitle, pagebackref=true bookmarks=true,bookmarksnumbered=false,bookmarksopen=false, breaklinks=false,pdfborder={0 0 1},backref=false,colorlinks=true]{hyperref}
 %
@@ -167,15 +152,12 @@ bibencoding=utf8,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  Замена вместо "Рис. 1:" необходимо "Рис. 1. "
 \RequirePackage{caption}
 \DeclareCaptionLabelSeparator{tchk}{. }
-\captionsetup{justification=centering,labelsep=tchk}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  Переопределения
+\captionsetup{justification=centering, labelsep=tchk}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \usepackage{marginnote}
 \usepackage{emptypage}
 \usepackage{todonotes}
-%\usepackage{layouts}
 \usepackage{lastpage}
 
 \newlist{todolist}{itemize}{2}
