@@ -1,82 +1,63 @@
-%% !TEX TS-program = xelatex
-% !BIB TS-program = biber
-%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 \input{preamble}
-%
-
-\DeclareSourcemap{
-	\maps[datatype=bibtex]{
-		\map{
-			\step[fieldsource=langid, match=russian, final]
-			\step[fieldset=presort, fieldvalue={a}]
-		}
-		\map{
-			\step[fieldsource=langid, notmatch=russian, final]
-			\step[fieldset=presort, fieldvalue={z}]
-		}
-	}
-}
-
-%%%%%%%%%%%%%%%%%%%  Водяной знак  %% пакет  \usepackage{draftwatermark}
-\SetWatermarkLightness{0.99} % прозрачность
-\SetWatermarkText{ООО <<ЮРЕКС>>} % Текст водяного знака
-\SetWatermarkScale{0.8}  %масштаб
-
 
 \begin{document}
-
-\thispagestyle{empty}  %  Не нумеровать первую страницу
-
-\input{колонтитулы}
-\input{var}
-\input{data}
-\input{pereopr}
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\input{titul/shapIP}  
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-\subsection{Вопросы экспертизы}
-\subfile{ask}
-
-\subsection{Исходные данные и объекты исследования}
-\subfile{объекты_представленные_на_экспертизу}
-
-\subsection{Заявленные ходатайства}
-\subfile{Заявленные_ходатайства}
-
-\subsection{Обстоятельства дела}
-\subfile{обстоятельства_дела}
-
-%\nocite{*}
-\printbibliography
-
-
-\section{Исследование}
-
-\subsection{Термины и определения}
-\subfile{термины_определения}
-
-\subsection{Условные обозначения}
-\subfile{условные_обозначения}
-
-\subsection{Технические средства}
-\subfile{технические_средства}
-
-%\subsection{Ограничения по применению исходных данных и предположения, в пределах которых проводилась экспертиза}
-%\subfile{ограничения}
-
-%%%%%%%%%%%%%%%%  Собственно экспертиза
-
-%\subfile{sections/ОСАГОэкспертиtзаФакт}
-\subfile{sections/исследование_недостатков_ТС}
-\subfile{sections/исследованиеОборудования}
-%\include{sections/поручение}
-%\include{бло}
-
+	\input{var}
+	\input{data}
+	
+	\input{pereopr}
+	
+	\input{колонтитулы}
+	\input{водянойзнак}
+	
+	%%%%%%   Титульный лист
+	\thispagestyle{empty}  %  Не нумеровать первую страницу
+	\input{titul/заключениеэкспертаИП}
+	%\include{titul/shapOOO_Офкадин}
+	%\include{titul/shapNEOPR}
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
+	\subsection{Вопросы экспертизы}
+	\subfile{ask}
+	
+	\subsection{Исходные данные и объекты исследования}
+	\subfile{объекты_представленные_на_экспертизу}
+	
+	\subsection{Заявленные ходатайства}
+	\subfile{Заявленные_ходатайства}
+	
+	\subsection{Обстоятельства дела}
+	\subfile{обстоятельства_дела}
+	
+	
+	\printbibliography
+	
+	%\section{Исследование}
+	
+	\subsection{Термины и определения}
+	\subfile{термины_определения}
+	
+	\subsection{Условные обозначения}
+	\subfile{условные_обозначения}
+	
+	\subsection{Технические средства}
+	\subfile{технические_средства}
+	
+	\subsection{Ограничения по применению исходных данных и предположения, в пределах которых проводилась экспертиза}
+	\subfile{ограничения}
+	
+	%%%%%%%%%%%%%%%%  Собственно экспертиза
+	%\input{sections/износМЮt}
+	%\subfile{sections/ОСАГОэкспертизаФакт}
+	%\subfile{sections/исследование_недостатков_ремонта}
+	\subfile{sections/исследование_недостатков_ТС}
+	%\subfile{sections/исследование_недостатков_ТС_1}
+	%\subfile{sections/оценка_оборудования}
+	%\subfile{sections/исследованиеОборудования}
+	%\subfile{sections/исследованиеДВС}
+	%\subfile{sections/исследованиеКПП}
+	%\subfile{sections/исследованиеЛКП}
+	%\include{sectionsud/поручение}
+	%\include{бло}
+	%\subfile{sections/шаблоны_таблиц}
+	
 \end{document} 
