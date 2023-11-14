@@ -26,7 +26,10 @@
 
 %%%%%%%%%%%  Библиолграфия
 .
-\bibliographystyle{gost2008}
+\usepackage[nottoc,notlot,notlof]{tocbibind} %добавляет в содержание список источников
+\makeatletter % |список 
+\bibliographystyle{ugost2008} % |литературы
+\renewcommand{\@biblabel}[1]{#1.}% |с \makeatother % |точкой
 
 \addbibresource{C:/BibLatex/TechnicalExpertise.bib}
 
