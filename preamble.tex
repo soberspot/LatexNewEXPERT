@@ -30,18 +30,28 @@
 
 \addbibresource{C:/BibLatex/TechnicalExpertise.bib}
 
-\DeclareSourcemap{
-	\maps[datatype=bibtex]{
-		\map{
-			\step[fieldsource=langid, match=russian, final]
-			\step[fieldset=presort, fieldvalue={a}]
-		}
-		\map{
-			\step[fieldsource=langid, notmatch=russian, final]
-			\step[fieldset=presort, fieldvalue={z}]
-		}
-	}
-}
+%\DeclareSourcemap{
+%	\maps[datatype=bibtex]{
+%		\map{
+%			\step[fieldsource=langid, match=russian, final]
+%			\step[fieldset=presort, fieldvalue={a}]
+%		}
+%		\map{
+%			\step[fieldsource=langid, notmatch=russian, final]
+%			\step[fieldset=presort, fieldvalue={z}]
+%		}
+%	}
+%}
+
+
+
+\usepackage[nottoc,notlot,notlof]{tocbibind} %добавляет в содержание список источников
+\makeatletter % |список 
+\bibliographystyle{ugost2008} % |литературы
+\renewcommand{\@biblabel}[1]{#1.}% |с \makeatother % |точкой
+
+
+
 
 %%%%%%%%%%% Поля документа
 \usepackage{geometry}
