@@ -16,8 +16,8 @@
 \usepackage{indentfirst} 
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%\usepackage{ifxetex} % select kind of TeX
-%\ifxetex % for xetex
+\usepackage{ifxetex} % select kind of TeX
+\ifxetex % for xetex
 \usepackage[no-math]{fontspec}
 \usepackage{xltxtra}
 \usepackage{polyglossia}[indentfirst=true]
@@ -28,12 +28,12 @@
 \setsansfont[Scale=.85]{Arial}
 \setmonofont[Scale=.8]{Courier New}
 \newfontfamily\cyrillicfonttt[Script=Cyrillic,Scale=.85]{Arial}
-%\else 
-%\usepackage[warn]{mathtext}	
+\else 
+\usepackage[warn]{mathtext}	
 %\usepackage[T2A]{fontenc}
-%\usepackage[utf8]{inputenc}
-%\usepackage[english,russian]{babel}
-%\fi
+\usepackage[utf8]{inputenc}
+\usepackage[english,russian]{babel}
+\fi
 \usepackage{mathtools}                    
 \usepackage{amsmath}
 \usepackage{amssymb}  
