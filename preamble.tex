@@ -1,11 +1,13 @@
 % !TEX TS-program = xelatex
 % !BIB TS-program = biber
-% !TeX spellcheck = russian-aot-ieyo
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \documentclass[a4paper]{article}
-\usepackage{fontspec}   
 \usepackage[utf8]{inputenc}  % Кодировка исходного текста
-
+\usepackage{polyglossia}    %для русского языка
+\usepackage[T2A]{fontenc}
+\defaultfontfeatures{Ligatures={TeX},Renderer=Basic} 
+\setmainfont[Ligatures={TeX, Historic}]{Times New Roman}
+\usepackage[left=20mm, top=20mm, right=10mm, bottom=20mm,  footskip=10mm]{geometry} 
 \usepackage[fontsize=12pt]{scrextend}
 \usepackage{setspace}
 \onehalfspacing % Полутерный интервал
@@ -23,7 +25,6 @@
 \usepackage{duckuments}
 
 %%%%%%%%%%%  Библиолграфия
-
 
 \addbibresource{C:/BibLatex/TechnicalExpertise.bib}
 
@@ -46,8 +47,8 @@
 \geometry{bottom=20mm}
 \geometry{left=25mm}
 \geometry{right=20mm}
-\usepackage{setspace}  % Интерлиньяж  
-%\onehalfspacing       % Интерлиньяж 1.5
+\usepackage{setspace} % Интерлиньяж  
+%\onehalfspacing % Интерлиньяж 1.5
 % произвольный интервал
 \setstretch{1.25}
 %

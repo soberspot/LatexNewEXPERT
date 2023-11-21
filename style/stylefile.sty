@@ -1,7 +1,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \ProvidesPackage{stylefile}
 
-
+\usepackage{fontspec}   
 
 \RequirePackage{csvsimple}
 \RequirePackage{subfiles}
@@ -18,6 +18,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \usepackage{ifxetex} % select kind of TeX
 \ifxetex % for xetex
+%\usepackage[no-math]{fontspec}
+%\usepackage{xltxtra}
 \usepackage{polyglossia}[indentfirst=true]
 \setdefaultlanguage[spelling=modern]{russian}
 \setotherlanguage{english}
@@ -49,7 +51,7 @@
 %
 %\usepackage{subfigure}
 \usepackage{subcaption}
- %%%%%%%%%%%% Для вставки рисунков
+ % Для вставки рисунков
 \graphicspath
 {
     {./images/foto/}
@@ -104,8 +106,8 @@
 style=gost-numeric, 
 bibstyle=gost-numeric, 
 citestyle=numeric-comp,
-citestyle=alphabetic-verb,
-bibstyle=gost-alphabetic,
+%citestyle=alphabetic-verb,
+%bibstyle=gost-alphabetic,
 language=auto,
 sorting=ntvy,
 autolang=other,
