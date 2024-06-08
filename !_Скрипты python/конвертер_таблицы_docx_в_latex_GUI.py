@@ -7,7 +7,7 @@ root = tk.Tk()
 root.withdraw()
 
 # открываем диалоговое окно для выбора файла .docx
-file_path = filedialog.askopenfilename(filetypes=[("Тех задание", "*.docx")])
+file_path = filedialog.askopenfilename(filetypes=[("Таблица", "*.docx")])
 
 # если файл был выбран, выполняем конвертацию
 if file_path:
@@ -18,9 +18,12 @@ if file_path:
 # Открытие файла latex для записи
 with open("latex_table.tex", "w", encoding="utf-8") as f:
     # Начало окружения tabular
-    f.write("\\begin{tabular}{")
+    f.write("\\begin{longtable}{"+ '\n')
+    f.write("\\caption[]{\footnotesize {Наименование таблицы}}" + '\n')
+    f.write("\\label{tb: }\\" + '\n')
+    f.write("\\hline\n")
     # Определение выравнивания столбцов по центру
-    f.write("|".join(["c"] * len(table.columns)))
+    f.write("|".join(["l"] * len(table.columns)))
     f.write("}\n")
     # Перебор строк таблицы
     for i, row in enumerate(table.rows):
@@ -33,8 +36,8 @@ with open("latex_table.tex", "w", encoding="utf-8") as f:
         # Запись \hline для рисования горизонтальной линии
         f.write("\\hline\n")
     # Конец окружения tabular
-    f.write("\\end{tabular}")
+    f.write("\\end{longtable}")
 
-print("Конвертация завершена.")
+print("Конвертация завершена")
     # else:
 # print("Файл не выбран.")
