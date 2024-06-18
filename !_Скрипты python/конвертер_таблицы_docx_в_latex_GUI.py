@@ -18,13 +18,14 @@ if file_path:
 # Открытие файла latex для записи
 with open("latex_table.tex", "w", encoding="utf-8") as f:
     # Начало окружения tabular
-    f.write("\\begin{longtable}{"+ '\n')
-    f.write("\\caption[]{\footnotesize {Наименование таблицы}}" + '\n')
-    f.write("\\label{tb: }\\" + '\n')
-    f.write("\\hline\n")
+    f.write("\\begin{longtable}{")
     # Определение выравнивания столбцов по центру
     f.write("|".join(["l"] * len(table.columns)))
     f.write("}\n")
+    # f.write("\\hline\n")
+    f.write("\\caption[]{\\footnotesize{Наименование таблицы}}" + '\n')
+    f.write("\\label{tb:}\\\\" + '\n')
+    f.write("\\hline\n")
     # Перебор строк таблицы
     for i, row in enumerate(table.rows):
          # Запись значений счетчика строк, начиная с 1

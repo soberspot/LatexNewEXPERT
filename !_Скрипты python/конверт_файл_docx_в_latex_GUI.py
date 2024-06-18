@@ -41,12 +41,14 @@ def select_file():
     # Открываем окно выбора файла
     file_path = filedialog.askopenfilename(filetypes=[("Word files", "*.docx")])
     if file_path:
-        # Определяем имя выходного файла LaTeX
-        output_file = file_path.rsplit(".", 1)[0] + ".tex"
-        # Конвертируем файл
-        docx_to_latex(file_path, output_file)
-        print(f"Файл {output_file} успешно создан.")
-
+        # Открываем окно выбора места сохранения файла
+        output_path = filedialog.asksaveasfilename(defaultextension=".tex", filetypes=[("LaTeX files", "*.tex")])
+        if output_path:
+            # Конвертируем файл
+            docx_to_latex(file_path, output_path)
+            print(f"Файл {output_path} успешно создан.")
+             # Закрываем главное окно
+        root.destroy()
 # Создаем главное окно
 root = tk.Tk()
 root.title("Конвертер DOCX в LaTeX")
