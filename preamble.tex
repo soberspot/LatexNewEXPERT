@@ -2,13 +2,13 @@
 % !BIB TS-program = biber
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \documentclass[a4paper]{article}
-\usepackage[utf8]{inputenc}  % Кодировка исходного текста
-\usepackage{polyglossia}    %для русского языка
-\usepackage[T2A]{fontenc}
-\defaultfontfeatures{Ligatures={TeX},Renderer=Basic} 
-\setmainfont[Ligatures={TeX, Historic}]{Times New Roman}
-\usepackage[left=20mm, top=20mm, right=10mm, bottom=20mm,  footskip=10mm]{geometry} 
-\usepackage[fontsize=12pt]{scrextend}
+%\usepackage[utf8]{inputenc}  % Кодировка исходного текста
+%\usepackage{polyglossia} %для русского языка
+%\usepackage[T2A]{fontenc}
+%\defaultfontfeatures{Ligatures={TeX},Renderer=Basic} 
+%\setmainfont[Ligatures={TeX, Historic}]{Times New Roman}
+%\usepackage[left=20mm, top=20mm, right=10mm, bottom=20mm,  footskip=10mm]{geometry} 
+\usepackage[fontsize=14pt]{scrextend}
 \usepackage{setspace}
 \onehalfspacing % Полутерный интервал
 %\singlespacing % Одиночный интервал
@@ -26,11 +26,9 @@
 
 %%%%%%%%%%%  Библиолграфия
 
-
-
 \addbibresource{C:/BibLatex/TechnicalExpertise.bib}
 
-\DeclareSourcemap{ 
+\DeclareSourcemap{
 	\maps[datatype=bibtex]{
 		\map{
 			\step[fieldsource=langid, match=russian, final]
@@ -54,11 +52,5 @@
 % произвольный интервал
 \setstretch{1.25}
 %
-
-\usepackage{siunitx}
-\sisetup{
-	group-separator = { \ },
-	group-minimum-digits = 4
-}
 
 
