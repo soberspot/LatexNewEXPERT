@@ -1,60 +1,51 @@
-# # Открываем файл со словарём
-# with open('словарь.txt','r', encoding="UTF-8") as f:
-# #
-#     dictionary = dict(line.strip().split(',') for line in f)
+import tkinter as tk
+from tkinter import filedialog, messagebox
 
-# Открываем файл с исходным текстом
-with open('деталь.txt', 'r', encoding="UTF-8") as f:
-    text = f.read()
+def load_replacements(replacements_file):
+    replacements = {}
+    with open(replacements_file, "r", encoding="UTF-8") as file:
+        for line in file:
+            parts = line.split(",")
+            if len(parts) == 2:
+                key = parts[0].strip()
+                value = parts[1].strip()
+                replacements[key] = value
+    return replacements
 
-# Заменяем строки в тексте согласно словарю
-# for string, replacement in dictionary.items():
-#     text = text.replace(string, replacement)
+def replace_phrases_in_file(input_file, output_file, replacements):
+    with open(input_file, "r", encoding="UTF-8") as file:
+        lines = file.readlines()
 
-# Сохраняем изменённый текст в новый файл
-with open('output.txt', 'w') as f:
-    f.write(text)
-import csv
+    with open(output_file, "w", encoding="UTF-8") as file:
+        for line in lines:
+            for key, value in replacements.items():
+                line = line.replace(key, value)
+            file.write(line)
 
-filename = 'словарь.txt'  # Замените на имя вашего файла
+def select_files():
+    input_file = filedialog.askopenfilename(title="Выберите входной файл", filetypes=[("Текстовые файлы", "*.txt"), ("TeX файлы", "*.tex")])
+    if not input_file:
+        messagebox.showwarning("Предупреждение", "Входной файл не выбран.")
+        return
 
-with open(filename, 'r', encoding='utf-8') as file:
-    reader = csv.reader(file, delimiter=':')
-    dictionary = {row[0].strip(): row[1].strip() for row in reader}
+    output_file = filedialog.asksaveasfilename(title="Выберите выходной файл", defaultextension=".tex", filetypes=[("TeX файлы", "*.tex"), ("Текстовые файлы", "*.txt")])
+    if not output_file:
+        messagebox.showwarning("Предупреждение", "Выходной файл не выбран.")
+        return
 
-print(dictionary)
+    replacements_file = "словарь.txt"  # Путь к файлу с заменами
+    replacements = load_replacements(replacements_file)
+    replace_phrases_in_file(input_file, output_file, replacements)
+    messagebox.showinfo("Успех", "Замены выполнены успешно.")
 
-# Открываем файл с исходным текстом
-with open('деталь.txt', 'r', encoding="UTF-8") as f:
-    text = f.read()
+# Создание графического интерфейса
+root = tk.Tk()
+root.title("Замена словосочетаний")
 
-# # Заменяем строки в тексте согласно словарю
-# for string, replacement in dictionary.items():
-#     text = text.replace(string, replacement)
+frame = tk.Frame(root)
+frame.pack(padx=10, pady=10)
 
-value = dictionary['БОКОВИНА ОКНО СТЕКЛО Л.']  # Accessing value by key
-print(value)  # Output: 'Стекло левой боковины'
-dictionary['НОВАЯ ЗАПИСЬ'] = 'Значение новой записи'  # Adding a new entry
-dictionary['БОКОВИНА ОКНО СТЕКЛО Л.'] = 'Новое значение'  # Updating an existing entry
-del dictionary['БОКОВИНА ОКНО СТЕКЛО Л.']  # Deleting an entry
-for key, value in dictionary.items():
-    print(key, ':', value)
-if 'БОКОВИНА ОКНО СТЕКЛО Л.' in dictionary:
-    print("Key exists")
+select_button = tk.Button(frame, text="Выбрать файлы", command=select_files)
+select_button.pack(pady=10)
 
-keys = list(dictionary.keys())
-values = list(dictionary.values())
-print("Keys:", keys)
-print("Values:", values)
-dictionary.clear()
-output_filename = 'output.csv'  # Specify the output file name
-with open(output_filename, 'w', encoding='utf-8', newline='') as file:
-    writer = csv.writer(file, delimiter=':')
-    for key, value in dictionary.items():
-        writer.writerow([key, value])
-
-# Сохраняем изменённый текст в новый файл
-with open('output.txt', 'w') as f:
-    f.write(text)
-
-
+root.mainloop()
