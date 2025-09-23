@@ -21,7 +21,11 @@
 \usepackage{multicol}
 \usepackage{fancyhdr}
 \usepackage[style=iso]{datetime2}
-\DTMsetdatestyle{ddmmyyyy-dot}
+
+
+\newdateformat{mydateformat}{%
+	\THEDAY.\THEMONTH.\THEYEAR%
+}
 % ---------- Колонтитулы ----------
 \pagestyle{fancy}
 \fancyhf{}
