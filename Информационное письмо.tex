@@ -20,12 +20,8 @@
 \usepackage{ragged2e}
 \usepackage{multicol}
 \usepackage{fancyhdr}
-\usepackage[style=iso]{datetime2}
 
 
-\newdateformat{mydateformat}{%
-	\THEDAY.\THEMONTH.\THEYEAR%
-}
 % ---------- Колонтитулы ----------
 \pagestyle{fancy}
 \fancyhf{}
@@ -68,7 +64,7 @@ e-mail: 4516611@gmail.com \\
 
 % Переменные
 \newcommand{\ReferenceDate}{12.09.2025}
-\newcommand{\LetterDate}{\mydateformat\today}
+\newcommand{\LetterDate}{\DTMtoday}
 
 \newcommand{\Предмет}{ двигателя автомобиля Ford Transit H533XP82, VIN Z6FFXXESGFKE32196, 10.01.2025 г.}
 
