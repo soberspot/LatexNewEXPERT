@@ -1,0 +1,60 @@
+\documentclass{article}
+\usepackage{fontspec}
+\usepackage{polyglossia}
+\setmainlanguage{russian}
+\setmainfont{Times New Roman}
+\setsansfont{Arial}
+\setmonofont{Courier New}
+
+\usepackage{etoolbox}  % ← РЕКОМЕНДУЕМЫЙ ПАКЕТ
+\usepackage{xcolor}
+\usepackage{geometry}
+
+% Определяем условия
+\newbool{draft}
+\newbool{internal}
+\newbool{confidential}
+
+% Устанавливаем значения
+\setbool{draft}{true}
+\setbool{internal}{false}
+\setbool{confidential}{true}
+
+\begin{document}
+	
+	% Условный заголовок для черновика
+	\ifbool{draft}{
+		\noindent\textbf{\textcolor{red}{ЧЕРНОВИК - НЕ ДЛЯ РАСПРОСТРАНЕНИЯ}} \\
+		\textcolor{red}{Дата создания: \today} \\
+		\hrule
+		\vspace{10pt}
+	}{}
+	
+	% Комбинированные условия
+	\ifboolexpr{ bool {confidential} and not bool {draft} }{
+		\noindent\textbf{\textcolor{orange}{КОНФИДЕНЦИАЛЬНО}} \\
+		\hrule
+		\vspace{10pt}
+	}{}
+	
+	\begin{center}
+		\LARGE\textbf{Техническое задание}
+	\end{center}
+	
+	% Более сложные условия
+	\ifboolexpr{ bool {internal} or bool {draft} }{
+		\subsection{Дополнительная информация (внутренняя)}
+		\begin{itemize}
+			\item Бюджет проекта: 500,000 руб.
+			\item Приоритет: Высокий
+		\end{itemize}
+	}{}
+	
+	% Простые условия
+	\ifbool{draft}{
+		\textbf{Стоимость:} \textcolor{red}{[расчет выполняется]}
+	}{
+		\textbf{Стоимость:} 500,000 руб.
+	}
+	
+\end{document}
