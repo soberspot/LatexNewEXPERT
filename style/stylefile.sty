@@ -65,7 +65,7 @@
 \usepackage[leftcaption]{sidecap}
 %
 %%% Работа с таблицами
-\usepackage{array,tabularx,tabulary,booktabs,longtable,ltablex} % Дополнительная работа с таблицами\usepackage{tabularx}
+\RequirePackage{array,tabularx,tabulary,booktabs,longtable,ltablex} % Дополнительная работа с таблицами\usepackage{tabularx}
 %
 \usepackage{multirow} % Слияние строк в таблице
 %
@@ -133,12 +133,14 @@ bibencoding=utf8,
 \usepackage[section,above,below]{placeins}
 \usepackage{afterpage,placeins}
 \usepackage{tikz}       % Работа с графикой
+\usetikzlibrary{shapes}
 \usepackage{pgfplots}
 \pgfplotsset{compat=newest}
 \usepackage{pgfplotstable}
 \usepackage{lipsum}
 \usepackage{pdfpages}
 \usepackage{eso-pic}
+\usepackage{mwe} % Пакет с примерами, включая изображения-заглушки
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 \usepackage{xfp,siunitx}
