@@ -1,0 +1,84 @@
+% ----------------------------------------------
+% Оформление заголовков и ссылок
+% ----------------------------------------------
+\usepackage{ifthen}
+\usepackage{etoolbox}
+\usepackage{titlesec}
+
+
+
+\hypersetup{
+	colorlinks=true,
+	linkcolor=black,
+	urlcolor=blue,
+	pdfauthor={Исполнитель},
+	pdftitle={Протокол выполнения работ}
+}
+
+\captionsetup{labelformat=default,labelsep=period}
+\titleformat{\section}{\large\bfseries}{\thesection.}{1em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection.}{1em}{}
+
+% ----------------------------------------------
+% Пользовательские команды для фото и приложений
+% ----------------------------------------------
+
+% Фото (автоматическая нумерация и шаблон-заглушка)
+\newcommand{\insertphoto}[2]{%
+	\begin{figure}[H]
+		\centering
+		\IfFileExists{images/#1}{
+			\includegraphics[width=0.85\textwidth]{images/#1}
+		}{
+			\begin{tikzpicture}
+				\draw[gray, thick] (0,0) rectangle (12,8);
+				\node[gray!70!black, align=center] at (6,4)
+				{\textsf{\Large Место для фото}\\[0.5em]\textsf{(#2)}};
+			\end{tikzpicture}
+		}
+		\caption{#2}
+		\addcontentsline{lof}{figure}{Фото~\thefigure~—~#2}
+	\end{figure}
+}
+
+% Приложения (автоматическая нумерация)
+\newcounter{appcounter}
+\newcommand{\addappendix}[2]{%
+	\refstepcounter{appcounter}%
+	\begin{table}[H]
+		\centering
+		\caption*{\textbf{Приложение \theappcounter~— #1}}
+		\addcontentsline{lot}{table}{Приложение~\theappcounter~—~#1}
+		\begin{tabularx}{0.95\textwidth}{|X|}
+			\hline
+			#2 \\
+			\hline
+		\end{tabularx}
+	\end{table}
+}
+
+% Заголовки списков
+\newcommand{\listofphotoscaption}{\centering\Large\textbf{Список фотографий}\par\vspace{1em}}
+\newcommand{\listofappcaption}{\centering\Large\textbf{Список приложений}\par\vspace{1em}}
+
+
+% ===== Настройки подписей =====
+\usepackage{caption}
+\DeclareCaptionLabelSeparator*{dashsep}{~---~}
+\captionsetup{
+	labelsep=dashsep,
+	justification=centering,
+	font=small
+}
+\renewcommand{\figurename}{Фото}
+
+% ===== Счётчик и макрос для приложений =====
+\newcounter{app}
+\renewcommand{\theapp}{\Asbuk{app}}
+\newcommand{\appsection}[1]{%
+	\refstepcounter{app}%
+	\section*{Приложение \theapp\\#1}%
+	\addcontentsline{toc}{section}{Приложение \theapp — #1}
+}
+
+

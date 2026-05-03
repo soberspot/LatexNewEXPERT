@@ -1,0 +1,131 @@
+% !TEX program = xelatex
+\documentclass[12pt,a4paper]{article}
+\usepackage{polyglossia}
+\setmainlanguage{russian}
+\usepackage{fontspec}
+\setmainfont{Times New Roman}
+\usepackage{amsmath,amssymb,siunitx,booktabs,geometry,hyperref}
+\geometry{margin=2.5cm}
+\sisetup{output-decimal-marker={,},group-separator={\,},per-mode=symbol}
+
+\title{Определение скорости столкновения Infiniti QX80 с КАМАЗом методом CRASH3 (профиль по ширине и высоте)}
+\author{}
+\date{}
+
+\begin{document}
+	\maketitle
+	
+	\section*{1. Исходные данные и принятые допущения}
+	\begin{itemize}
+		\item Кузовная жёсткость (\textbf{A}, \textbf{B}) получена из отчёта NCAP на автомобиль-«двойник» Nissan Armada 2019, тест V10562 (жёсткий барьер).
+		\item Данные испытания: скорость удара $v=\SI{56.61}{km/h}$; масса «as tested» $m_{\text{test}}=\SI{2933}{kg}$; длина повреждённой зоны $L=\SI{1.219}{m}$; статические замеры $C_1..C_6=\{350,\,470,\,480,\,475,\,485,\,302\}\,\si{mm}$.
+		\item Для CRASH3 принята скорость без повреждений $b_0=\SI{8}{km/h}$.
+		\item Масса Infiniti QX80 в расчёте $m=\SI{2778}{kg}$ (около \SI{2688}{kg} снаряжённая + \SI{90}{kg} водитель).
+		\item Профиль остаточной деформации Infiniti по высоте (снизу вверх): \SI{0.10}{m}, \SI{0.22}{m}, \SI{0.34}{m}, \SI{0.46}{m}; по ширине зоны $W=\SI{0.40}{}$–\SI{0.45}{m}; сетка 6 сечений по ширине, 4 уровня по высоте.
+	\end{itemize}
+	
+	\section*{2. Получение коэффициентов жёсткости по CRASH3}
+	Средняя деформация в тесте:
+	\[
+	\bar C=\frac{C_1+2C_2+2C_3+2C_4+2C_5+C_6}{10}=\SI{447.2}{mm}=\SI{0.4472}{m}.
+	\]
+	Параметр $b_1=(v-b_0)/\bar C\approx\SI{30.19}{s^{-1}}$ (где $b_0=\SI{2.22}{m/s}$). По формулам Campbell/CRASH3:
+	\[
+	A=\frac{m_{\text{test}}\,b_0\,b_1}{L}\approx \SI{1.614e5}{\newton\per\metre},\qquad
+	B=\frac{m_{\text{test}}\,b_1^{2}}{L}\approx \SI{2.194e6}{\newton\per\metre\squared},
+	\]
+	восстановительный ход $c_0=A/B\approx \SI{73.6}{mm}$.
+	
+	\medskip
+	\noindent\textbf{Энергия на единицу ширины (CRASH3):}
+	\[
+	E_w(c)=A\,c+\tfrac12 B\,c^2+\frac{A^2}{2B}.
+	\]
+	Полная энергия по ширине $W$:
+	\[
+	E=\sum_{j=1}^{6}E_w(\bar c_j)\,\Delta w,\qquad \Delta w=W/6,
+	\]
+	где $\bar c_j$ — средняя по 4 уровням деформация в $j$-м сечении.
+	Эквивалентная «барьерная» скорость:
+	\[
+	V_{\text{EES}}=\sqrt{\frac{2E}{m}}.
+	\]
+	
+	\section*{3. Матрицы деформаций (4$\times$6) для $W=\SI{0.45}{m}$}
+	Даны две крайние модели распределения по ширине: \emph{клин} (максимум слева, к правому краю до нуля) и \emph{равномерно} (одинаково по всей ширине). Значения в миллиметрах.
+	
+	\begin{table}[h]
+		\centering\small
+		\caption{Матрица деформаций (мм), распределение по ширине: \textbf{клин}, $W=\SI{0.45}{m}$}
+		\begin{tabular}{lcccccc}
+			\toprule
+			Уровень / Сечение & 1 & 2 & 3 & 4 & 5 & 6\\
+			\midrule
+			Level 1 (\SI{0.10}{m}) & 91.7 & 75.0 & 58.3 & 41.7 & 25.0 & 8.3\\
+			Level 2 (\SI{0.22}{m}) & 201.7 & 165.0 & 128.3 & 91.7 & 55.0 & 18.3\\
+			Level 3 (\SI{0.34}{m}) & 311.7 & 255.0 & 198.3 & 141.7 & 85.0 & 28.3\\
+			Level 4 (\SI{0.46}{m}) & 421.7 & 345.0 & 268.3 & 191.7 & 115.0 & 38.3\\
+			\bottomrule
+		\end{tabular}
+	\end{table}
+	
+	\begin{table}[h]
+		\centering\small
+		\caption{Матрица деформаций (мм), распределение по ширине: \textbf{равномерно}, $W=\SI{0.45}{m}$}
+		\begin{tabular}{lcccccc}
+			\toprule
+			Уровень / Сечение & 1 & 2 & 3 & 4 & 5 & 6\\
+			\midrule
+			Level 1 (\SI{0.10}{m}) & 100.0 & 100.0 & 100.0 & 100.0 & 100.0 & 100.0\\
+			Level 2 (\SI{0.22}{m}) & 220.0 & 220.0 & 220.0 & 220.0 & 220.0 & 220.0\\
+			Level 3 (\SI{0.34}{m}) & 340.0 & 340.0 & 340.0 & 340.0 & 340.0 & 340.0\\
+			Level 4 (\SI{0.46}{m}) & 460.0 & 460.0 & 460.0 & 460.0 & 460.0 & 460.0\\
+			\bottomrule
+		\end{tabular}
+	\end{table}
+	
+	\section*{4. Результаты (эквивалентная скорость $V_{\text{EES}}$)}
+	Для $m=\SI{2778}{kg}$ получены следующие значения:
+	
+	\begin{table}[h]
+		\centering\small
+		\caption{Итоги по двум ширинам зоны и двум моделям распределения}
+		\begin{tabular}{lcc}
+			\toprule
+			Сценарий & Энергия $E$ (кДж) & $V_{\text{EES}}$ (км/ч)\\
+			\midrule
+			$W=\SI{0.45}{m}$, клин & 25.65 & 15.47\\
+			$W=\SI{0.45}{m}$, равномерно & 61.71 & 24.00\\
+			$W=\SI{0.40}{m}$, клин & 22.80 & 14.59\\
+			$W=\SI{0.40}{m}$, равномерно & 54.85 & 22.62\\
+			\bottomrule
+		\end{tabular}
+	\end{table}
+	
+	\paragraph{Чувствительность к A,B (одновременно $\pm10\%$), $W=\SI{0.45}{m}$.}
+	При масштабировании $A\!\to\!fA$, $B\!\to\!fB$ энергия $E$ масштабируется $\propto f$, а скорость $V_{\text{EES}}\propto\sqrt{f}$. Численно:
+	
+	\begin{table}[h]
+		\centering\small
+		\caption{Чувствительность $V_{\text{EES}}$ (км/ч) к изменению A,B на $\pm10\%$}
+		\begin{tabular}{lccc}
+			\toprule
+			Сценарий & $f=0{,}9$ & $f=1{,}0$ & $f=1{,}1$\\
+			\midrule
+			$W=\SI{0.45}{m}$, клин & 14.68 & 15.47 & 16.23\\
+			$W=\SI{0.45}{m}$, равномерно & 22.76 & 24.00 & 25.17\\
+			\bottomrule
+		\end{tabular}
+	\end{table}
+	
+	\section*{5. Вывод}
+	Диапазон эквивалентной барьерной скорости для Infiniti QX80 при заданном профиле остаточных деформаций и нецентральном контакте с КАМАЗом лежит в пределах \textbf{около 15–24 км/ч}. Для характера повреждений на фото (локальный максимум слева по ширине при выраженной деформации по высоте) наиболее реалистичная оценка — \textbf{$\sim$20–22 км/ч}.
+	
+	\section*{6. Источники}
+	\begin{enumerate}
+		\item NHTSA NCAP Test Report V10562: \emph{2019 Nissan Armada 4WD, Full Frontal Rigid Barrier}. (использованы: скорость, масса, $L$, $C_1..C_6$).
+		\item Campbell K.L. Energy Basis for Collision Severity. SAE Paper 740565.
+		\item McHenry R.R. The CRASH-3 Damage Model in Collision Reconstruction. SAE 900100.
+	\end{enumerate}
+	
+\end{document}

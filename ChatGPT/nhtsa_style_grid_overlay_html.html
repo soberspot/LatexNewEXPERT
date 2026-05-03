@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>NHTSA‑style Grid Overlay</title>
+  <style>
+    :root{
+      --ui-bg:#0b1020; --ui-fg:#e8eefc; --ui-muted:#93a2b8; --accent:#5aa9ff;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;background:var(--ui-bg);color:var(--ui-fg)}
+    header{position:sticky;top:0;z-index:20;background:linear-gradient(180deg,#0b1020,#0b1020dd 70%,#0b102000);backdrop-filter:blur(8px);}
+    .toolbar{display:flex;gap:.75rem;flex-wrap:wrap;align-items:center;padding:10px 14px;border-bottom:1px solid #1b233a}
+    .toolbar .group{display:flex;gap:.5rem;align-items:center;background:#0f1730;border:1px solid #1b233a;border-radius:14px;padding:6px 10px}
+    label{font-size:.84rem;color:var(--ui-muted)}
+    input[type="number"],select{background:#0b142b;color:var(--ui-fg);border:1px solid #263055;border-radius:10px;padding:6px 8px;min-width:70px}
+    input[type="color"]{width:38px;height:32px;border:none;background:transparent}
+    input[type="range"]{accent-color:var(--accent)}
+    button{background:#192446;color:#eaf1ff;border:1px solid #2a3861;padding:8px 12px;border-radius:12px;cursor:pointer}
+    button:hover{background:#213059}
+    #stage{position:relative;height:calc(100vh - 120px);min-height:480px;overflow:hidden;background:#0a0f1f}
+    #imageLayer{position:absolute;inset:0;display:grid;place-items:center}
+    #imageLayer img{max-width:100%;max-height:100%;object-fit:contain;user-select:none;pointer-events:none;}
+    /* GRID LAYER */
+    #gridLayer{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(1); transform-origin:50% 50%; cursor:grab;}
+    #gridLayer.dragging{cursor:grabbing}
+    #gridSvg{display:block}
+    .badge{position:absolute;left:12px;bottom:12px;background:#0f1730c8;border:1px solid #243155;color:#cfe0ff;padding:6px 10px;border-radius:10px;font-size:.82rem}
+    .kpi{display:inline-flex;gap:10px}
+    .kpi span{opacity:.8}
+    .hint{font-size:.8rem;color:#a7b6d4;padding:6px 14px 10px}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="toolbar">
+      <div class="group">
+        <label>Фото:</label>
+        <input id="fileInput" type="file" accept="image/*" />
+        <button id="fitBtn">Подогнать к окну</button>
+      </div>
+      <div class="group">
+        <label>Кол-во столбцов</label>
+        <input id="cols" type="number" value="16" min="1" max="64" />
+        <label>Кол-во рядов</label>
+        <input id="rows" type="number" value="11" min="1" max="64" />
+        <label>Ширина, мм</label>
+        <input id="physW" type="number" value="2000" step="1" />
+        <label>Высота, мм</label>
+        <input id="physH" type="number" value="1125" step="1" />
+      </div>
+      <div class="group">
+        <label>Линии</label>
+        <input id="lineColor" type="color" value="#ffd400" title="Цвет линий" />
+        <label>Толщина</label>
+        <input id="stroke" type="number" value="2" min="1" max="6" />
+        <label>Прозрачность</label>
+        <input id="opacity" type="range" min="20" max="100" value="85" />
+        <label><input id="labels" type="checkbox" checked /> метки</label>
+        <label><input id="centerline" type="checkbox" checked /> центр</label>
+      </div>
+      <div class="group">
+        <label>Масштаб</label>
+        <input id="scale" type="range" min="10" max="400" value="100" />
+        <button id="resetBtn">Сброс</button>
+        <label><input id="flipH" type="checkbox"/> зеркально X</label>
+        <label><input id="flipV" type="checkbox"/> зеркально Y</label>
+      </div>
+      <div class="group">
+        <button id="exportBtn">Экспорт PNG</button>
+      </div>
+    </div>
+    <div class="hint">Колёсный диск 22″ = 559 мм можно использовать как масштабную проверку. Кол-во столбцов/рядов по умолчанию соответствует сетке NHTSA: 16×11; физические размеры: 2000×1125 мм.</div>
+  </header>
+
+  <div id="stage">
+    <div id="imageLayer"><img id="photo" alt="" /></div>
+    <div id="gridLayer" aria-label="Grid">
+      <svg id="gridSvg" xmlns="http://www.w3.org/2000/svg"></svg>
+    </div>
+    <div class="badge" id="badge"></div>
+  </div>
+
+<script>
+(function(){
+  const img = document.getElementById('photo');
+  const fileInput = document.getElementById('fileInput');
+  const fitBtn = document.getElementById('fitBtn');
+  const resetBtn = document.getElementById('resetBtn');
+  const exportBtn = document.getElementById('exportBtn');
+  const colsEl = document.getElementById('cols');
+  const rowsEl = document.getElementById('rows');
+  const physWEl = document.getElementById('physW');
+  const physHEl = document.getElementById('physH');
+  const colorEl = document.getElementById('lineColor');
+  const strokeEl = document.getElementById('stroke');
+  const labelsEl = document.getElementById('labels');
+  const centerEl = document.getElementById('centerline');
+  const opacityEl = document.getElementById('opacity');
+  const scaleEl = document.getElementById('scale');
+  const flipHEl = document.getElementById('flipH');
+  const flipVEl = document.getElementById('flipV');
+
+  const gridLayer = document.getElementById('gridLayer');
+  const gridSvg = document.getElementById('gridSvg');
+  const badge = document.getElementById('badge');
+
+  let pos = {x:0,y:0};
+  let dragging = false;
+
+  const state = {
+    cols: 16,
+    rows: 11,
+    physW: 2000,
+    physH: 1125,
+    color: '#ffd400',
+    stroke: 2,
+    opacity: .85,
+    showLabels: true,
+    showCenter: true,
+    scale: 1,
+    flipX: false,
+    flipY: false,
+    gridPixelWidth: 900, // стартовая ширина SVG, будет авто-подогнана
+  };
+
+  function mmPerCell(){
+    return { w: state.physW / state.cols, h: state.physH / state.rows };
+  }
+
+  function updateBadge(){
+    const mm = mmPerCell();
+    badge.innerHTML = `<div class="kpi"><span>Сетка: ${state.cols} × ${state.rows}</span><span>Ячейка: ${mm.w.toFixed(1)} × ${mm.h.toFixed(1)} мм</span><span>Масштаб: ${(state.scale*100).toFixed(0)}%</span></div>`;
+  }
+
+  function buildGrid(){
+    const width = state.gridPixelWidth;
+    const height = Math.round(width * (state.physH / state.physW));
+    gridSvg.setAttribute('width', width);
+    gridSvg.setAttribute('height', height);
+    gridSvg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+    gridLayer.style.opacity = state.opacity;
+
+    // Clear
+    while (gridSvg.firstChild) gridSvg.removeChild(gridSvg.firstChild);
+
+    // Background transparent rect for hit tests
+    const bg = document.createElementNS('http://www.w3.org/2000/svg','rect');
+    bg.setAttribute('x',0);bg.setAttribute('y',0);bg.setAttribute('width',width);bg.setAttribute('height',height);
+    bg.setAttribute('fill','transparent');
+    gridSvg.appendChild(bg);
+
+    const lineColor = state.color;
+    const stroke = state.stroke;
+
+    // Grid lines
+    for(let c=0;c<=state.cols;c++){
+      const x = Math.round(width * (c/state.cols));
+      const v = document.createElementNS('http://www.w3.org/2000/svg','line');
+      v.setAttribute('x1',x);v.setAttribute('y1',0);v.setAttribute('x2',x);v.setAttribute('y2',height);
+      v.setAttribute('stroke',lineColor); v.setAttribute('stroke-width',stroke);
+      gridSvg.appendChild(v);
+    }
+    for(let r=0;r<=state.rows;r++){
+      const y = Math.round(height * (r/state.rows));
+      const hLine = document.createElementNS('http://www.w3.org/2000/svg','line');
+      hLine.setAttribute('x1',0);hLine.setAttribute('y1',y);hLine.setAttribute('x2',width);hLine.setAttribute('y2',y);
+      hLine.setAttribute('stroke',lineColor); hLine.setAttribute('stroke-width',stroke);
+      gridSvg.appendChild(hLine);
+    }
+
+    // Centerline (между 8 и 9 столбцами при 16)
+    if(state.showCenter){
+      const cx = width * (0.5);
+      const cl = document.createElementNS('http://www.w3.org/2000/svg','line');
+      cl.setAttribute('x1',cx);cl.setAttribute('y1',0);cl.setAttribute('x2',cx);cl.setAttribute('y2',height);
+      cl.setAttribute('stroke', '#ff6464');
+      cl.setAttribute('stroke-width', stroke+0.5);
+      cl.setAttribute('stroke-dasharray', '8 6');
+      gridSvg.appendChild(cl);
+    }
+
+    // Cell labels i-j по NHTSA (ряд-столбец)
+    if(state.showLabels){
+      const txtG = document.createElementNS('http://www.w3.org/2000/svg','g');
+      txtG.setAttribute('font-family','ui-monospace, Menlo, Consolas, monospace');
+      txtG.setAttribute('font-size', Math.max(10, Math.round(width/80)) );
+      txtG.setAttribute('fill', '#000');
+      for(let r=1;r<=state.rows;r++){
+        for(let c=1;c<=state.cols;c++){
+          const cx = width*(c-0.5)/state.cols;
+          const cy = height*(r-0.5)/state.rows;
+          const label = document.createElementNS('http://www.w3.org/2000/svg','text');
+          label.setAttribute('x', cx);
+          label.setAttribute('y', cy);
+          label.setAttribute('text-anchor','middle');
+          label.setAttribute('dominant-baseline','central');
+          label.setAttribute('paint-order','stroke');
+          label.setAttribute('stroke','#fff');
+          label.setAttribute('stroke-width','2');
+          label.textContent = `${r}-${c}`;
+          txtG.appendChild(label);
+        }
+      }
+      gridSvg.appendChild(txtG);
+    }
+
+    applyTransform();
+    updateBadge();
+  }
+
+  function applyTransform(){
+    const sx = state.flipX ? -1 : 1;
+    const sy = state.flipY ? -1 : 1;
+    gridLayer.style.transform = `translate(-50%,-50%) scale(${sx*state.scale}, ${sy*state.scale}) translate(${pos.x}px, ${pos.y}px)`;
+  }
+
+  // Dragging
+  let dragStart;
+  gridLayer.addEventListener('pointerdown', (e)=>{
+    gridLayer.setPointerCapture(e.pointerId);
+    dragging = true; gridLayer.classList.add('dragging');
+    dragStart = {clientX:e.clientX, clientY:e.clientY, posX:pos.x, posY:pos.y};
+  });
+  gridLayer.addEventListener('pointermove', (e)=>{
+    if(!dragging) return;
+    const dx = (e.clientX - dragStart.clientX) / state.scale;
+    const dy = (e.clientY - dragStart.clientY) / state.scale;
+    pos.x = dragStart.posX + dx;
+    pos.y = dragStart.posY + dy;
+    applyTransform();
+  });
+  gridLayer.addEventListener('pointerup', ()=>{ dragging=false; gridLayer.classList.remove('dragging');});
+  gridLayer.addEventListener('pointercancel', ()=>{ dragging=false; gridLayer.classList.remove('dragging');});
+
+  // Wheel zoom on grid
+  gridLayer.addEventListener('wheel', (e)=>{
+    e.preventDefault();
+    const delta = Math.sign(e.deltaY);
+    const s = state.scale * (delta>0 ? 0.92 : 1.09);
+    state.scale = Math.min(4, Math.max(0.1, s));
+    scaleEl.value = Math.round(state.scale*100);
+    applyTransform(); updateBadge();
+  }, {passive:false});
+
+  // Controls bindings
+  colsEl.onchange = rowsEl.onchange = physWEl.onchange = physHEl.onchange = ()=>{
+    state.cols = Math.max(1, +colsEl.value||16);
+    state.rows = Math.max(1, +rowsEl.value||11);
+    state.physW = Math.max(1, +physWEl.value||2000);
+    state.physH = Math.max(1, +physHEl.value||1125);
+    buildGrid();
+  };
+  colorEl.oninput = ()=>{ state.color = colorEl.value; buildGrid(); };
+  strokeEl.oninput = ()=>{ state.stroke = Math.max(1, +strokeEl.value||2); buildGrid(); };
+  labelsEl.onchange = ()=>{ state.showLabels = labelsEl.checked; buildGrid(); };
+  centerEl.onchange = ()=>{ state.showCenter = centerEl.checked; buildGrid(); };
+  opacityEl.oninput = ()=>{ state.opacity = (+opacityEl.value)/100; gridLayer.style.opacity = state.opacity; };
+  scaleEl.oninput = ()=>{ state.scale = (+scaleEl.value)/100; applyTransform(); updateBadge(); };
+  flipHEl.onchange = ()=>{ state.flipX = flipHEl.checked; applyTransform(); };
+  flipVEl.onchange = ()=>{ state.flipY = flipVEl.checked; applyTransform(); };
+
+  resetBtn.onclick = ()=>{
+    pos = {x:0,y:0}; state.scale = 1; scaleEl.value = 100; state.flipX=false;state.flipY=false; flipHEl.checked=false; flipVEl.checked=false; applyTransform(); updateBadge();
+  };
+
+  fitBtn.onclick = ()=>{
+    // подгоняем ширину SVG к 70% меньшей стороны окна
+    const s = document.getElementById('stage');
+    const w = s.clientWidth, h = s.clientHeight;
+    const k = Math.min(w,h) * 0.82; // базовый размер
+    state.gridPixelWidth = Math.max(400, Math.round(k));
+    buildGrid();
+  };
+
+  // Load user image
+  fileInput.addEventListener('change', (e)=>{
+    const file = e.target.files && e.target.files[0];
+    if(!file) return;
+    img.src = URL.createObjectURL(file);
+    img.onload = ()=>{ /* nothing */ };
+  });
+
+  // Export PNG (рендерим изображение + сетку в один canvas)
+  exportBtn.onclick = async () => {
+    const width = gridSvg.viewBox.baseVal.width; // px
+    const height = gridSvg.viewBox.baseVal.height;
+
+    // Рисуем в масштабе 2x для четкости
+    const scale = 2;
+    const canvas = document.createElement('canvas');
+    canvas.width = Math.round(width*scale);
+    canvas.height = Math.round(height*scale);
+    const ctx = canvas.getContext('2d');
+    ctx.scale(scale, scale);
+
+    // 1) фон: вырезаем из текущего фото видимую область под сеткой (упрощенный вариант – вписать фото целиком)
+    if(img && img.complete && img.naturalWidth){
+      // Вписываем фото целиком под сетку
+      // определяем размер фото в пикселях пропорционально SVG
+      const iw = img.naturalWidth, ih = img.naturalHeight;
+      const fitW = width, fitH = height;
+      // cover/contain logic (contain):
+      const r = Math.min(fitW/iw, fitH/ih);
+      const dw = iw*r, dh = ih*r;
+      const dx = (fitW - dw)/2, dy = (fitH - dh)/2;
+      ctx.drawImage(img, dx, dy, dw, dh);
+    }
+
+    // 2) поверх – отрисовываем сетку как в SVG
+    ctx.globalAlpha = state.opacity;
+    ctx.lineWidth = state.stroke;
+    ctx.strokeStyle = state.color;
+
+    // grid lines
+    for(let c=0;c<=state.cols;c++){
+      const x = Math.round(width * (c/state.cols));
+      ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,height); ctx.stroke();
+    }
+    for(let r=0;r<=state.rows;r++){
+      const y = Math.round(height * (r/state.rows));
+      ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(width,y); ctx.stroke();
+    }
+
+    // Centerline
+    if(state.showCenter){
+      ctx.save();
+      ctx.setLineDash([8,6]);
+      ctx.lineWidth = state.stroke+0.5; ctx.strokeStyle = '#ff6464';
+      ctx.beginPath(); ctx.moveTo(width*0.5,0); ctx.lineTo(width*0.5,height); ctx.stroke();
+      ctx.restore();
+    }
+
+    // Labels
+    if(state.showLabels){
+      ctx.save();
+      const fontSize = Math.max(10, Math.round(width/80));
+      ctx.font = `${fontSize}px ui-monospace, Menlo, Consolas, monospace`;
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      for(let r=1;r<=state.rows;r++){
+        for(let c=1;c<=state.cols;c++){
+          const cx = width*(c-0.5)/state.cols;
+          const cy = height*(r-0.5)/state.rows;
+          // outline
+          ctx.lineWidth = 3; ctx.strokeStyle = '#fff'; ctx.fillStyle = '#000';
+          const txt = `${r}-${c}`;
+          ctx.strokeText(txt, cx, cy);
+          ctx.fillText(txt, cx, cy);
+        }
+      }
+      ctx.restore();
+    }
+
+    const a = document.createElement('a');
+    a.download = 'grid_overlay.png';
+    a.href = canvas.toDataURL('image/png');
+    a.click();
+  };
+
+  // Initial draw
+  fitBtn.click();
+  buildGrid();
+  updateBadge();
+})();
+</script>
+</body>
+</html>

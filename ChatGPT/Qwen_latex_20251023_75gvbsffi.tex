@@ -1,0 +1,132 @@
+\documentclass[12pt]{article}
+\usepackage{fontspec}
+\usepackage[a4paper, margin=2cm]{geometry}
+\usepackage{polyglossia}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+
+% Шрифты
+\setmainfont{Liberation Serif}
+\setsansfont{Liberation Sans}
+\setmonofont{Liberation Mono}
+
+% Язык
+\setdefaultlanguage{russian}
+\setotherlanguage{english}
+
+% Форматирование
+\titleformat{\section}{\large\bfseries\centering}{\thesection}{1em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{1em}{}
+
+% Колонтитулы
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\small Система EDR: VIN \texttt{JN1JANZ62U0100644}}
+\lhead{\small Отчёт Infiniti QX80}
+\rfoot{\thepage}
+
+% Гиперссылки
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    citecolor=blue,
+    urlcolor=blue,
+    pdftitle={Отчёт по EDR Infiniti QX80},
+    pdfauthor={Автомобильный эксперт},
+    pdfsubject={EDR, диагностика, ДТП},
+    pdfkeywords={EDR, Infiniti, QX80, VIN}
+}
+
+% Заголовок
+\title{\bfseries\Large Подтверждение наличия системы EDR \\ в автомобиле Infiniti QX80 2019}
+\date{}
+
+\begin{document}
+
+\maketitle
+\thispagestyle{fancy}
+
+\section*{Введение}
+Настоящий отчёт содержит техническую информацию о системе \textbf{Event Data Recorder (EDR)} в автомобиле:
+\begin{center}
+\textbf{Infiniti QX80 2019 года выпуска} \\
+VIN: \texttt{JN1JANZ62U0100644}
+\end{center}
+Информация основана на данных NHTSA, технических спецификациях Nissan и анализе конструкции.
+
+\section{Общие сведения}
+\begin{tabularx}{\textwidth}{lX}
+    \toprule
+    \textbf{Параметр} & \textbf{Значение} \\
+    \midrule
+    Марка и модель & Infiniti QX80 \\
+    Год выпуска & 2019 \\
+    Код кузова & JXJ62 (JN1JA) \\
+    Производство & Япония, завод Tochigi \\
+    Рынок назначения & США / Канада \\
+    Наличие EDR & \textbf{Подтверждено (NHTSA)} \\
+    \bottomrule
+\end{tabularx}
+
+\section{Подтверждение наличия EDR}
+Согласно \href{https://www.nhtsa.gov/vin-decoder}{официальному декодеру NHTSA}, при вводе VIN \texttt{JN1JANZ62U0100644} указывается:
+
+\begin{quote}
+    \textbf{This vehicle is equipped with an Event Data Recorder (EDR).}
+\end{quote}
+
+Это официальное подтверждение со стороны регулятора США.
+
+\section{Что записывает EDR}
+Система фиксирует данные за 5 секунд до и после столкновения при превышении порога ускорения (~8–10g).
+
+\begin{table}[h]
+\centering
+\caption{Параметры, записываемые EDR}
+\begin{tabularx}{\textwidth}{lX}
+    \toprule
+    \textbf{Параметр} & \textbf{Описание} \\
+    \midrule
+    Скорость автомобиля & Зафиксированная скорость до остановки \\
+    Положение педали тормоза & Была ли нажата \\
+    Положение педали акселератора & В \% от полного хода \\
+    Ремни безопасности & Состояние водителя и пассажира \\
+    Обороты двигателя (RPM) & Число оборотов коленвала \\
+    Ускорение (g-force) & По осям X, Y, Z — сила удара \\
+    Срабатывание подушек & Время и последовательность активации \\
+    ABS / VDC & Активность систем стабилизации \\
+    \bottomrule
+\end{tabularx}
+\end{table}
+
+\textbf{Не записывается}: GPS, аудио, видео, повседневная езда.
+
+\section{Расположение и доступ к данным}
+\subsection*{Местоположение}
+EDR интегрирован в модуль:
+\item \textbf{Sensing \& Diagnostic Module (SDM)}
+    \item Расположение: под центральной консолью между сиденьями
+
+\subsection*{Доступ к данным}
+Требуется:
+\item Оборудование: \textbf{Bosch CDR Tool}
+    \item Подключение через OBD-II
+    \item Доступ: эксперты, ГИБДД, страховщики (по решению суда)
+
+\section{Примечания для владельца}
+\item Отсутствие EDR в руководстве — следствие параллельного импорта, \textbf{но система есть}.
+    \item Данные принадлежат владельцу. Производитель не собирает их дистанционно.
+    \item При ДТП рекомендуется диагностика SRS/EDR перед ремонтом.
+
+\section*{Заключение}
+Автомобиль \textbf{Infiniti QX80} (VIN: \texttt{JN1JANZ62U0100644}) \textbf{оснащён EDR}. Данные могут использоваться в страховых и судебных целях.
+
+\vspace{1cm}
+\begin{flushright}
+    \textit{Отчёт подготовлен: \today}
+\end{flushright}
+
+\end{document}

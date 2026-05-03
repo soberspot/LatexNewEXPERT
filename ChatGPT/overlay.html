@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8" />
+<title>CRASH3 Overlay 6×4 — flipped, drag & resize & wheel</title>
+<style>
+  :root{
+    /* старт: половинный размер, по центру */
+    --xl: 16.25;  /* left  %  */
+    --xr: 38.75;  /* right %  */
+    --yt: 33;     /* top   %  */
+    --yb: 63;     /* bottom%  */
+  }
+  body{margin:0;background:#111;color:#eee;font:14px/1.4 system-ui,Segoe UI,Arial,sans-serif}
+  .wrap{max-width:1200px;margin:16px auto;padding:8px}
+  .frame{position:relative;width:100%}
+  .frame img{width:100%;display:block}
+  .grid{
+    position:absolute;
+    left: calc(var(--xl) * 1%); top: calc(var(--yt) * 1%);
+    width: calc((var(--xr) - var(--xl)) * 1%);
+    height: calc((var(--yb) - var(--yt)) * 1%);
+    display:grid;
+    grid-template-columns: repeat(6, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    outline: 3px solid rgba(255,255,0,.95);
+    cursor: move;            /* перетаскивание */
+    pointer-events:auto;     /* ловим мышь */
+    user-select:none;
+  }
+  .cell{
+    border:2px solid rgba(255,255,255,.85);
+    display:flex;align-items:center;justify-content:center;
+    font-weight:600;text-shadow:0 1px 2px #000;
+  }
+  .banner{
+    position:absolute;left: calc(var(--xl) * 1%);
+    top: calc((var(--yt) - 6) * 1%);
+    background: rgba(0,0,0,.6);color:#fff;padding:6px 10px;border-radius:6px;font-weight:600
+  }
+  .panel{display:flex;gap:10px;align-items:center;margin-bottom:10px;flex-wrap:wrap}
+  .badge{background:#222;border:1px solid #333;border-radius:6px;padding:4px 8px}
+  .hint{opacity:.8}
+  button,select{background:#222;color:#eee;border:1px solid #333;border-radius:6px;padding:6px 10px;cursor:pointer}
+  code{background:#222;padding:2px 6px;border-radius:4px}
+
+  /* Ручки для resize (4 угла + 4 стороны) */
+  .handle{
+    position:absolute; width:16px; height:16px;
+    background: #ffd400; border:2px solid #000; border-radius:50%;
+    box-shadow:0 0 0 2px rgba(0,0,0,.2) inset;
+    margin:-8px 0 0 -8px; z-index:3;
+    pointer-events:auto; cursor: nwse-resize;
+  }
+  .h-n, .h-s{ border-radius:6px; width:20px; height:8px; margin:-4px 0 0 -10px; cursor: ns-resize; }
+  .h-e, .h-w{ border-radius:6px; width:8px; height:20px; margin:-10px 0 0 -4px; cursor: ew-resize; }
+  .h-n  { left:50%; top:0%;}
+  .h-s  { left:50%; top:100%;}
+  .h-e  { left:100%; top:50%;}
+  .h-w  { left:0%; top:50%;}
+  .h-nw { left:0%; top:0%;     cursor:nwse-resize}
+  .h-ne { left:100%; top:0%;   cursor:nesw-resize}
+  .h-se { left:100%; top:100%; cursor:nwse-resize}
+  .h-sw { left:0%; top:100%;   cursor:nesw-resize}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="panel">
+    <div class="badge">Изображение: <code>front.jpg</code></div>
+    <label>Профиль:
+      <select id="mode">
+        <option value="tri">Клин (максимум справа)</option>
+        <option value="uniform">Равномерно</option>
+      </select>
+    </label>
+    <span class="hint">
+      Перемещение: мышью (тащите рамку) или стрелками (±1%, с <b>Shift</b> — ±5%). <br>
+      Масштаб: колесо мыши над сеткой (центр — по центру сетки); resize-ручки (углы/стороны); 
+      горячие клавиши: <b>h</b>=×0.5, <b>H</b>=×2, ширина: <b>[</b>/<b>]</b>.
+    </span>
+  </div>
+
+  <div class="frame" id="frame">
+    <img src="front.jpg" alt="front" id="photo"
+         onerror="this.alt='Не найден front.jpg — положите фото рядом с overlay.html';this.style.opacity=.2">
+    <div class="banner" id="banner">CRASH3 матрица 6×4 (мм) — клин (справа→сильнее)</div>
+    <div class="grid" id="grid"></div>
+  </div>
+</div>
+
+<script>
+  // уровни снизу->вверх (L1..L4):
+  const levels = [100,220,340,460];
+  const cols = 6, rows = 4;
+  const MIN_W = 4;  // минимальная ширина сетки в процентах кадра
+  const MIN_H = 4;  // минимальная высота сетки в процентах кадра
+
+  // горизонтальный флип (максимум справа)
+  function triScaleFlipped(c){
+    const j = (cols - 1 - c);
+    return Math.max(0, 1 - (j + 0.5) / cols);
+  }
+
+  function colorFor(mm){
+    const t = Math.max(0, Math.min(1, mm / 460));
+    const r = Math.round(255*t), g = Math.round(40*(1-t)), b = Math.round(40*(1-t));
+    return `rgba(${r},${g},${b},0.45)`;
+  }
+
+  function buildMatrix(mode){
+    const grid = document.getElementById('grid');
+    grid.innerHTML = '';
+
+    // ячейки 6×4 (вертикальный флип: сверху L4... снизу L1)
+    for(let r=0;r<rows;r++){
+      const base = levels[rows-1 - r];
+      for(let c=0;c<cols;c++){
+        const scale = (mode==='tri') ? triScaleFlipped(c) : 1.0;
+        const mm = Math.round(base * scale);
+        const cell = document.createElement('div');
+        cell.className = 'cell';
+        cell.textContent = mm;
+        cell.style.background = colorFor(mm);
+        grid.appendChild(cell);
+      }
+    }
+
+    // ручки для resize
+    addHandles();
+
+    document.getElementById('banner').textContent =
+      `CRASH3 матрица 6×4 (мм) — ${mode==='tri' ? 'клин (справа→сильнее)' : 'равномерно'}`;
+  }
+
+  function addHandles(){
+    const grid = document.getElementById('grid');
+    const make = (cls, dir) => {
+      const h = document.createElement('div');
+      h.className = `handle ${cls}`;
+      h.dataset.dir = dir;
+      grid.appendChild(h);
+    };
+    // стороны
+    make('h-n', 'n'); make('h-s', 's'); make('h-e', 'e'); make('h-w', 'w');
+    // углы
+    make('h-nw','nw'); make('h-ne','ne'); make('h-se','se'); make('h-sw','sw');
+  }
+
+  // утилиты для рамки
+  function clamp01(x){ return Math.max(0, Math.min(100, x)); }
+  function getVars(){
+    const g = getComputedStyle(document.documentElement);
+    return {
+      xl: parseFloat(g.getPropertyValue('--xl'))||16.25,
+      xr: parseFloat(g.getPropertyValue('--xr'))||38.75,
+      yt: parseFloat(g.getPropertyValue('--yt'))||33,
+      yb: parseFloat(g.getPropertyValue('--yb'))||63
+    };
+  }
+  function setVars(v){
+    // соблюдаем минимальные размеры и рамки кадра
+    v.xl = clamp01(v.xl); v.xr = clamp01(v.xr);
+    v.yt = clamp01(v.yt); v.yb = clamp01(v.yb);
+    if (v.xr - v.xl < MIN_W)  v.xr = v.xl + MIN_W;
+    if (v.yb - v.yt < MIN_H)  v.yb = v.yt + MIN_H;
+    if (v.xr > 100){ v.xl -= (v.xr - 100); v.xr = 100; }
+    if (v.yb > 100){ v.yt -= (v.yb - 100); v.yb = 100; }
+    if (v.xl < 0){ v.xr -= v.xl; v.xl = 0; }
+    if (v.yt < 0){ v.yb -= v.yt; v.yt = 0; }
+    document.documentElement.style.setProperty('--xl', String(v.xl));
+    document.documentElement.style.setProperty('--xr', String(v.xr));
+    document.documentElement.style.setProperty('--yt', String(v.yt));
+    document.documentElement.style.setProperty('--yb', String(v.yb));
+  }
+
+  // равномерное масштабирование вокруг центра (f<1 — уменьшить, f>1 — увеличить)
+  function scaleAll(f){
+    const v = getVars();
+    const cx = (v.xl + v.xr)/2, cy = (v.yt + v.yb)/2;
+    const halfW = Math.max(MIN_W/2, (v.xr - v.xl)*f/2);
+    const halfH = Math.max(MIN_H/2, (v.yb - v.yt)*f/2);
+    setVars({ xl: cx - halfW, xr: cx + halfW, yt: cy - halfH, yb: cy + halfH });
+  }
+
+  // смещение рамки на dX/dY процентов
+  function translate(dx, dy){
+    const v = getVars();
+    const w = (v.xr - v.xl), h = (v.yb - v.yt);
+    let nv = { xl: v.xl + dx, xr: v.xr + dx, yt: v.yt + dy, yb: v.yb + dy };
+    if(nv.xl < 0){ nv.xl = 0; nv.xr = w; }
+    if(nv.xr > 100){ nv.xr = 100; nv.xl = 100 - w; }
+    if(nv.yt < 0){ nv.yt = 0; nv.yb = h; }
+    if(nv.yb > 100){ nv.yb = 100; nv.yt = 100 - h; }
+    setVars(nv);
+  }
+
+  // построить матрицу
+  const modeSel = document.getElementById('mode');
+  modeSel.addEventListener('change', ()=>buildMatrix(modeSel.value));
+  buildMatrix(modeSel.value);
+
+  // управление клавиатурой
+  window.addEventListener('keydown', (e)=>{
+    const step = e.shiftKey ? 5 : 1;
+    if(e.key==='ArrowLeft'){  translate(-step, 0); return; }
+    if(e.key==='ArrowRight'){ translate(+step, 0); return; }
+    if(e.key==='ArrowUp'){    translate(0, -step); return; }
+    if(e.key==='ArrowDown'){  translate(0, +step); return; }
+    if(e.key==='['){ // сузить по ширине на 10%
+      const v = getVars(), cx=(v.xl+v.xr)/2, halfW=(v.xr-v.xl)/2 * 0.9;
+      setVars({xl:cx-halfW, xr:cx+halfW, yt:v.yt, yb:v.yb}); return;
+    }
+    if(e.key===']'){ // расширить по ширине на 10%
+      const v = getVars(), cx=(v.xl+v.xr)/2, halfW=(v.xr-v.xl)/2 * 1.1;
+      setVars({xl:cx-halfW, xr:cx+halfW, yt:v.yt, yb:v.yb}); return;
+    }
+    if(e.key==='h'){ scaleAll(0.5); return; } // вдвое меньше
+    if(e.key==='H'){ scaleAll(2.0); return; } // вдвое больше
+  });
+
+  // drag & drop всей рамки
+  (function enableDrag(){
+    const grid = document.getElementById('grid');
+    const frame = document.getElementById('frame');
+    let dragging=false, startX=0, startY=0, startV=null, frameRect=null;
+
+    grid.addEventListener('mousedown', (e)=>{
+      // не начинать перенос, если жмём по ручке
+      if (e.target.classList.contains('handle')) return;
+      dragging=true;
+      startX = e.clientX; startY = e.clientY;
+      startV = getVars();
+      frameRect = frame.getBoundingClientRect();
+      e.preventDefault();
+    });
+    window.addEventListener('mousemove', (e)=>{
+      if(!dragging) return;
+      const dxPx = e.clientX - startX;
+      const dyPx = e.clientY - startY;
+      const dxPct = (dxPx / frameRect.width)  * 100;
+      const dyPct = (dyPx / frameRect.height) * 100;
+      translate(dxPct, dyPct);
+      startX = e.clientX; startY = e.clientY; // пошагово — плавнее
+    });
+    window.addEventListener('mouseup', ()=> dragging=false);
+    window.addEventListener('mouseleave', ()=> dragging=false);
+  })();
+
+  // resize ручками
+  (function enableHandles(){
+    const frame = document.getElementById('frame');
+    let resizing=false, dir=null, startX=0, startY=0, startV=null, rect=null;
+
+    document.addEventListener('mousedown', (e)=>{
+      const h = e.target;
+      if (!h.classList || !h.classList.contains('handle')) return;
+      resizing = true; dir = h.dataset.dir;
+      startX = e.clientX; startY = e.clientY;
+      startV = getVars();
+      rect = frame.getBoundingClientRect();
+      e.preventDefault();
+    });
+
+    window.addEventListener('mousemove', (e)=>{
+      if(!resizing) return;
+      const dx = (e.clientX - startX)/rect.width*100;
+      const dy = (e.clientY - startY)/rect.height*100;
+      let v = {...startV};
+
+      // по направлению ручки двигаем соответствующие границы
+      if (dir.includes('w')) v.xl = v.xl + dx;
+      if (dir.includes('e')) v.xr = v.xr + dx;
+      if (dir.includes('n')) v.yt = v.yt + dy;
+      if (dir.includes('s')) v.yb = v.yb + dy;
+
+      setVars(v);
+    });
+
+    window.addEventListener('mouseup', ()=> resizing=false);
+    window.addEventListener('mouseleave', ()=> resizing=false);
+  })();
+
+  // масштаб колесом мыши (вокруг центра сетки)
+  (function enableWheelScale(){
+    const grid = document.getElementById('grid');
+    grid.addEventListener('wheel', (e)=>{
+      e.preventDefault();
+      const delta = e.deltaY; // + вниз (уменьшить), - вверх (увеличить)
+      const f = (delta > 0) ? 1/1.1 : 1.1; // шаг ~±10%
+      scaleAll(f);
+    }, {passive:false});
+  })();
+</script>
+</body>
+</html>

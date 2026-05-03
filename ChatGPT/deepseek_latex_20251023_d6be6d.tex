@@ -1,0 +1,153 @@
+% !TEX program = xelatex
+\documentclass[a4paper,12pt]{article}
+
+\usepackage{polyglossia}
+\setmainlanguage{russian}
+\usepackage{fontspec}
+% Если Times New Roman недоступен, замените на: TeX Gyre Termes
+\setmainfont{Times New Roman}
+\usepackage[margin=1.5cm]{geometry}
+
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{calc}
+
+\begin{document}
+\centering
+
+% ===== НАСТРОЙКИ =====
+\def\FrontImage{front.jpg}   % <-- ИМЯ ВАШЕГО ФОТО
+\def\Cols{6}\def\Rows{4}     % сетка 6x4
+
+% Зона сетки в долях ширины/высоты изображения (0..1):
+\def\XL{0.05}\def\XR{0.50}   % левая/правая границы по ширине
+\def\YT{0.18}\def\YB{0.78}   % верх/низ по высоте
+
+% Уровни по высоте (мм) — 100, 220, 340, 460 (формула: 100 + 120*r, r=0..3)
+
+% ---------------- КАРТИНКА 1: КЛИН ----------------
+\begin{tikzpicture}
+  \node[inner sep=0] (im) {\includegraphics[width=\linewidth]{\FrontImage}};
+  % Углы изображения:
+  \path (im.south west) coordinate (SW);
+  \path (im.north east) coordinate (NE);
+
+  % Границы зоны (через доли 0..1):
+  \coordinate (XLpt) at ($(SW)!\XL!(NE)$);
+  \coordinate (XRpt) at ($(SW)!\XR!(NE)$);
+  \coordinate (YTpt) at ($(SW)!\YT!(NE)$);
+  \coordinate (YBpt) at ($(SW)!\YB!(NE)$);
+
+  % Прямоугольник зоны:
+  \coordinate (GLL) at (XLpt |- YBpt);  % нижний левый
+  \coordinate (GUR) at (XRpt |- YTpt);  % верхний правый
+
+  % Рамка и сетка:
+  \draw[yellow, line width=1.8pt] (GLL) rectangle (GUR);
+  \foreach \c in {1,...,\numexpr\Cols-1\relax}{
+    \coordinate (V\c) at ($(GLL)!\c/\Cols!(GUR -| GLL)$);
+    \draw[white, opacity=.85, line width=.8pt] (V\c) -- (V\c |- GUR);
+  }
+  \foreach \r in {1,...,\numexpr\Rows-1\relax}{
+    \coordinate (H\r) at ($(GLL)!\r/\Rows!(GUR |- GLL)$);
+    \draw[white, opacity=.85, line width=.8pt] (H\r) -- (H\r -| GUR);
+  }
+
+  % Заголовок:
+  \node[anchor=south west, fill=black!60, text=white, inner sep=3pt]
+    at ($(GUR)+(0,-10mm)$) {CRASH3 матрица 6×4 (мм) — клин};
+
+  % Ячейки и значения (клин: scale = max(0, 1 - (c+0.5)/Cols) ):
+  \foreach \r in {0,...,3}{% уровень по высоте
+    \pgfmathsetmacro{\Lmm}{100 + 120*\r}  % 100,220,340,460
+    \pgfmathsetmacro{\yTop}{(\r+1)/\Rows}
+    \pgfmathsetmacro{\yBot}{\r/\Rows}
+    \coordinate (Yt) at ($(GLL)!\yTop!(GUR |- GLL)$);
+    \coordinate (Yb) at ($(GLL)!\yBot!(GUR |- GLL)$);
+    \foreach \c in {0,...,5}{% сечение по ширине
+      \pgfmathsetmacro{\xL}{\c/\Cols}
+      \pgfmathsetmacro{\xC}{(\c+0.5)/\Cols}
+      \pgfmathsetmacro{\xR}{(\c+1)/\Cols}
+      \coordinate (X0) at ($(GLL)!\xL!(GUR -| GLL)$);
+      \coordinate (Xc) at ($(GLL)!\xC!(GUR -| GLL)$);
+      \coordinate (X1) at ($(GLL)!\xR!(GUR -| GLL)$);
+
+      \pgfmathsetmacro{\Scale}{max(0, 1 - (\c+0.5)/\Cols)}
+      \pgfmathsetmacro{\V}{round(\Lmm * \Scale)}    % мм
+      \pgfmathsetmacro{\Perc}{min(100, max(0, round(100*\V/460)))}
+
+      % Заливка и контур:
+      \fill[red!\Perc!black, opacity=.35] (X0|-Yb) rectangle (X1|-Yt);
+      \draw[white, line width=.8pt, opacity=.95] (X0|-Yb) rectangle (X1|-Yt);
+
+      % Подпись значения:
+      \node[fill=black!55, text=white, inner sep=2pt, rounded corners=1pt]
+        at (Xc|-$(Yb)!0.5!(Yt)$) {\pgfmathprintnumber{\V}};
+    }
+  }
+\end{tikzpicture}
+
+%\newpage
+%
+%% ---------------- КАРТИНКА 2: РАВНОМЕРНО ----------------
+%\begin{tikzpicture}
+%  \node[inner sep=0] (im) {\includegraphics[width=\linewidth]{\FrontImage}};
+%  \path (im.south west) coordinate (SW);
+%  \path (im.north east) coordinate (NE);
+%
+%  \coordinate (XLpt) at ($(SW)!\XL!(NE)$);
+%  \coordinate (XRpt) at ($(SW)!\XR!(NE)$);
+%  \coordinate (YTpt) at ($(SW)!\YT!(NE)$);
+%  \coordinate (YBpt) at ($(SW)!\YB!(NE)$);
+%
+%  \coordinate (GLL) at (XLpt |- YBpt);
+%  \coordinate (GUR) at (XRpt |- YTpt);
+%
+%  \draw[yellow, line width=1.8pt] (GLL) rectangle (GUR);
+%  \foreach \c in {1,...,\numexpr\Cols-1\relax}{
+%    \coordinate (V\c) at ($(GLL)!\c/\Cols!(GUR -| GLL)$);
+%    \draw[white, opacity=.85, line width=.8pt] (V\c) -- (V\c |- GUR);
+%  }
+%  \foreach \r in {1,...,\numexpr\Rows-1\relax}{
+%    \coordinate (H\r) at ($(GLL)!\r/\Rows!(GUR |- GLL)$);
+%    \draw[white, opacity=.85, line width=.8pt] (H\r) -- (H\r -| GUR);
+%  }
+%
+%  \node[anchor=south west, fill=black!60, text=white, inner sep=3pt]
+%    at ($(GUR)+(0,-10mm)$) {CRASH3 матрица 6×4 (мм) — равномерно};
+%
+%  % Ячейки и значения (равномерно: scale = 1):
+%  \foreach \r in {0,...,3}{
+%    \pgfmathsetmacro{\Lmm}{100 + 120*\r}
+%    \pgfmathsetmacro{\yTop}{(\r+1)/\Rows}
+%    \pgfmathsetmacro{\yBot}{\r/\Rows}
+%    \coordinate (Yt) at ($(GLL)!\yTop!(GUR |- GLL)$);
+%    \coordinate (Yb) at ($(GLL)!\yBot!(GUR |- GLL)$);
+%    \foreach \c in {0,...,5}{
+%      \pgfmathsetmacro{\xL}{\c/\Cols}
+%      \pgfmathsetmacro{\xC}{(\c+0.5)/\Cols}
+%      \pgfmathsetmacro{\xR}{(\c+1)/\Cols}
+%      \coordinate (X0) at ($(GLL)!\xL!(GUR -| GLL)$);
+%      \coordinate (Xc) at ($(GLL)!\xC!(GUR -| GLL)$);
+%      \coordinate (X1) at ($(GLL)!\xR!(GUR -| GLL)$);
+%
+%      \pgfmathsetmacro{\V}{round(\Lmm)}    % мм
+%      \pgfmathsetmacro{\Perc}{min(100, max(0, round(100*\V/460)))}
+%
+%      \fill[red!\Perc!black, opacity=.35] (X0|-Yb) rectangle (X1|-Yt);
+%      \draw[white, line width=.8pt, opacity=.95] (X0|-Yb) rectangle (X1|-Yt);
+%
+%      \node[fill=black!55, text=white, inner sep=2pt, rounded corners=1pt]
+%        at (Xc|-$(Yb)!0.5!(Yt)$) {\pgfmathprintnumber{\V}};
+%    }
+%  }
+%\end{tikzpicture}
+
+\vspace{2mm}
+{\small
+Точное позиционирование: корректируйте доли \texttt{\XL, \XR, \YT, \YB}. 
+Напр., \texttt{\XL=0.10, \XR=0.52, \YT=0.22, \YB=0.78}.
+Чтобы рисовать только один вариант — удалите лишний блок \texttt{tikzpicture}.
+}
+
+\end{document}

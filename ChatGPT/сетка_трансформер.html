@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>NHTSA-style Grid Overlay (Perspective)</title>
+  <style>
+    :root{
+      --ui-bg:#0b1020; --ui-fg:#e8eefc; --ui-muted:#93a2b8; --accent:#5aa9ff;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;
+      background:var(--ui-bg);
+      color:var(--ui-fg);
+    }
+    header{
+      position:sticky;
+      top:0;
+      z-index:10;
+      background:linear-gradient(180deg,#0b1020,#0b1020dd 70%,#0b102000);
+      backdrop-filter:blur(8px);
+    }
+    .toolbar{
+      display:flex;
+      flex-wrap:wrap;
+      gap:.75rem;
+      align-items:center;
+      padding:10px 14px;
+      border-bottom:1px solid #1b233a;
+    }
+    .toolbar .group{
+      display:flex;
+      flex-wrap:wrap;
+      gap:.5rem;
+      align-items:center;
+      background:#0f1730;
+      border:1px solid #1b233a;
+      border-radius:14px;
+      padding:6px 10px;
+    }
+    label{font-size:.84rem;color:var(--ui-muted)}
+    input[type="number"],select{
+      background:#0b142b;
+      color:var(--ui-fg);
+      border:1px solid #263055;
+      border-radius:10px;
+      padding:6px 8px;
+      min-width:70px;
+    }
+    input[type="color"]{
+      width:38px;
+      height:32px;
+      border:none;
+      background:transparent;
+      padding:0;
+    }
+    input[type="range"]{accent-color:var(--accent)}
+    button{
+      background:#192446;
+      color:#eaf1ff;
+      border:1px solid #2a3861;
+      padding:8px 12px;
+      border-radius:12px;
+      cursor:pointer;
+      font-size:.85rem;
+      white-space:nowrap;
+    }
+    button:hover{background:#213059}
+    .hint{
+      font-size:.8rem;
+      color:#a7b6d4;
+      padding:6px 14px 10px;
+    }
+
+    #stage{
+      position:relative;
+      height:calc(100vh - 120px);
+      min-height:480px;
+      overflow:hidden;
+      background:#0a0f1f;
+    }
+    #imageLayer{
+      position:absolute;
+      inset:0;
+      display:grid;
+      place-items:center;
+    }
+    #imageLayer img{
+      max-width:100%;
+      max-height:100%;
+      object-fit:contain;
+      user-select:none;
+      pointer-events:none;
+    }
+
+    #gridLayer{
+      position:absolute;
+      inset:0;
+      pointer-events:auto;
+    }
+    #gridSvg{
+      width:100%;
+      height:100%;
+      touch-action:none;
+    }
+
+    .handle{
+      fill:#ffd400;
+      stroke:#000;
+      stroke-width:1.3;
+      cursor:grab;
+    }
+    .handle:active{cursor:grabbing}
+    .quad-outline{
+      fill:rgba(255,255,255,.03);
+      stroke:#5aa9ff;
+      stroke-width:1.4;
+      stroke-dasharray:6 4;
+      cursor:move;
+    }
+    .quad-center{
+      fill:#5aa9ff;
+      stroke:#000;
+      stroke-width:1.2;
+      cursor:move;
+    }
+
+    .badge{
+      position:absolute;
+      left:12px;
+      bottom:12px;
+      background:#0f1730c8;
+      border:1px solid #243155;
+      color:#cfe0ff;
+      padding:6px 10px;
+      border-radius:10px;
+      font-size:.82rem;
+    }
+    .kpi{display:inline-flex;gap:10px;flex-wrap:wrap}
+    .kpi span{opacity:.85}
+  </style>
+</head>
+<body>
+<header>
+  <div class="toolbar">
+    <div class="group">
+      <label>Фото:</label>
+      <input id="fileInput" type="file" accept="image/*" />
+      <button id="fitBtn">Подогнать/сбросить сетку</button>
+    </div>
+    <div class="group">
+      <label>Столбцы</label>
+      <input id="cols" type="number" value="16" min="1" max="64" />
+      <label>Ряды</label>
+      <input id="rows" type="number" value="11" min="1" max="64" />
+      <label>Ширина, мм</label>
+      <input id="physW" type="number" value="2000" step="1" />
+      <label>Высота, мм</label>
+      <input id="physH" type="number" value="1125" step="1" />
+    </div>
+    <div class="group">
+      <label>Линии</label>
+      <input id="lineColor" type="color" value="#ffd400" title="Цвет линий" />
+      <label>Толщина</label>
+      <input id="stroke" type="number" value="2" min="1" max="6" />
+      <label>Прозрачность</label>
+      <input id="opacity" type="range" min="20" max="100" value="85" />
+      <label><input id="labels" type="checkbox" checked /> метки</label>
+      <label><input id="centerline" type="checkbox" checked /> центр</label>
+      <label><input id="dimH" type="checkbox" /> размер X</label>
+      <label><input id="dimV" type="checkbox" /> размер Y</label>
+    </div>
+    <div class="group">
+      <span style="font-size:.8rem;color:var(--ui-muted);">
+        Перспектива: тяните жёлтые углы или центральную точку.
+      </span>
+    </div>
+    <div class="group">
+      <button id="exportBtn">Экспорт PNG</button>
+    </div>
+  </div>
+  <div class="hint">
+    Сетка в перспективе (4 точки). Колёсный диск 22″ = 559 мм можно использовать как масштабную проверку.
+    По умолчанию сетка 16×11, физические размеры 2000×1125 мм (формат NHTSA).
+  </div>
+</header>
+
+<div id="stage">
+  <div id="imageLayer"><img id="photo" alt="" /></div>
+  <div id="gridLayer">
+    <svg id="gridSvg" xmlns="http://www.w3.org/2000/svg"></svg>
+  </div>
+  <div class="badge" id="badge"></div>
+</div>
+
+<script>
+(function(){
+  const img = document.getElementById('photo');
+  const fileInput = document.getElementById('fileInput');
+  const fitBtn = document.getElementById('fitBtn');
+  const exportBtn = document.getElementById('exportBtn');
+
+  const colsEl = document.getElementById('cols');
+  const rowsEl = document.getElementById('rows');
+  const physWEl = document.getElementById('physW');
+  const physHEl = document.getElementById('physH');
+  const colorEl = document.getElementById('lineColor');
+  const strokeEl = document.getElementById('stroke');
+  const labelsEl = document.getElementById('labels');
+  const centerEl = document.getElementById('centerline');
+  const opacityEl = document.getElementById('opacity');
+  const dimHEl = document.getElementById('dimH');
+  const dimVEl = document.getElementById('dimV');
+
+  const stage = document.getElementById('stage');
+  const gridSvg = document.getElementById('gridSvg');
+  const badge = document.getElementById('badge');
+
+  const SVG_NS = 'http://www.w3.org/2000/svg';
+
+  const state = {
+    cols:16,
+    rows:11,
+    physW:2000,
+    physH:1125,
+    color:'#ffd400',
+    stroke:2,
+    opacity:0.85,
+    showLabels:true,
+    showCenter:true,
+    showDimH:false,
+    showDimV:false,
+    svgW:0,
+    svgH:0,
+    corners:null // [{x,y} TL, TR, BR, BL]
+  };
+
+  function lerpPoint(p,q,t){
+    return {x: p.x + (q.x - p.x)*t, y: p.y + (q.y - p.y)*t};
+  }
+
+  function edgeNormal(p1,p2){
+    const ex = p2.x - p1.x;
+    const ey = p2.y - p1.y;
+    const len = Math.hypot(ex,ey) || 1;
+    return {x:-ey/len, y:ex/len};
+  }
+
+  function mmPerCell(){
+    return {
+      w: state.physW / state.cols,
+      h: state.physH / state.rows
+    };
+  }
+
+  function updateBadge(){
+    const mm = mmPerCell();
+    badge.innerHTML =
+      `<div class="kpi">
+        <span>Сетка: ${state.cols} × ${state.rows}</span>
+        <span>Ячейка: ${mm.w.toFixed(1)} × ${mm.h.toFixed(1)} мм</span>
+      </div>`;
+  }
+
+  function initSvgSize(){
+    const w = stage.clientWidth || 800;
+    const h = stage.clientHeight || 600;
+    state.svgW = w;
+    state.svgH = h;
+    gridSvg.setAttribute('viewBox',`0 0 ${w} ${h}`);
+    gridSvg.setAttribute('width',w);
+    gridSvg.setAttribute('height',h);
+    if(!state.corners){
+      resetCorners();
+    }
+  }
+
+  function resetCorners(){
+    const W = state.svgW || (stage.clientWidth||800);
+    const H = state.svgH || (stage.clientHeight||600);
+    const aspectPhys = state.physH / state.physW;
+    let baseW = W * 0.7;
+    let baseH = baseW * aspectPhys;
+    if(baseH > H*0.7){
+      baseH = H*0.7;
+      baseW = baseH / aspectPhys;
+    }
+    const cx = W/2, cy = H/2;
+    const tl = {x: cx - baseW/2, y: cy - baseH/2};
+    const tr = {x: cx + baseW/2, y: cy - baseH/2};
+    const br = {x: cx + baseW/2, y: cy + baseH/2};
+    const bl = {x: cx - baseW/2, y: cy + baseH/2};
+    state.corners = [tl,tr,br,bl];
+    buildGrid();
+  }
+
+  function buildGrid(){
+    const W = state.svgW, H = state.svgH;
+    const corners = state.corners;
+    if(!corners || corners.length !== 4) return;
+    const [tl,tr,br,bl] = corners;
+
+    while(gridSvg.firstChild) gridSvg.removeChild(gridSvg.firstChild);
+
+    // фон для хитов
+    const bg = document.createElementNS(SVG_NS,'rect');
+    bg.setAttribute('x',0);
+    bg.setAttribute('y',0);
+    bg.setAttribute('width',W);
+    bg.setAttribute('height',H);
+    bg.setAttribute('fill','transparent');
+    gridSvg.appendChild(bg);
+
+    const gGrid = document.createElementNS(SVG_NS,'g');
+    gGrid.setAttribute('stroke',state.color);
+    gGrid.setAttribute('stroke-width',state.stroke);
+    gGrid.setAttribute('fill','none');
+    gGrid.setAttribute('opacity',state.opacity);
+
+    // вертикальные линии (по u)
+    for(let c=0;c<=state.cols;c++){
+      const u = c/state.cols;
+      const top = lerpPoint(tl,tr,u);
+      const bottom = lerpPoint(bl,br,u);
+      const line = document.createElementNS(SVG_NS,'line');
+      line.setAttribute('x1',top.x);
+      line.setAttribute('y1',top.y);
+      line.setAttribute('x2',bottom.x);
+      line.setAttribute('y2',bottom.y);
+      gGrid.appendChild(line);
+    }
+
+    // горизонтальные линии (по v)
+    for(let r=0;r<=state.rows;r++){
+      const v = r/state.rows;
+      const left = lerpPoint(tl,bl,v);
+      const right = lerpPoint(tr,br,v);
+      const line = document.createElementNS(SVG_NS,'line');
+      line.setAttribute('x1',left.x);
+      line.setAttribute('y1',left.y);
+      line.setAttribute('x2',right.x);
+      line.setAttribute('y2',right.y);
+      gGrid.appendChild(line);
+    }
+
+    // центральная продольная линия (u = 0.5)
+    if(state.showCenter){
+      const u = 0.5;
+      const top = lerpPoint(tl,tr,u);
+      const bottom = lerpPoint(bl,br,u);
+      const cl = document.createElementNS(SVG_NS,'line');
+      cl.setAttribute('x1',top.x);
+      cl.setAttribute('y1',top.y);
+      cl.setAttribute('x2',bottom.x);
+      cl.setAttribute('y2',bottom.y);
+      cl.setAttribute('stroke','#ff6464');
+      cl.setAttribute('stroke-width',state.stroke+0.5);
+      cl.setAttribute('stroke-dasharray','8 6');
+      gGrid.appendChild(cl);
+    }
+
+    gridSvg.appendChild(gGrid);
+
+    // подписи ячеек
+    if(state.showLabels){
+      const gLabels = document.createElementNS(SVG_NS,'g');
+      const fontSize = Math.max(10, Math.round(Math.min(W,H)/30));
+      gLabels.setAttribute('font-family','ui-monospace, Menlo, Consolas, monospace');
+      gLabels.setAttribute('font-size',fontSize);
+      gLabels.setAttribute('fill','#000');
+
+      for(let r=1;r<=state.rows;r++){
+        const v = (r-0.5)/state.rows;
+        for(let c=1;c<=state.cols;c++){
+          const u = (c-0.5)/state.cols;
+          const top = lerpPoint(tl,tr,u);
+          const bottom = lerpPoint(bl,br,u);
+          const p = lerpPoint(top,bottom,v);
+          const t = document.createElementNS(SVG_NS,'text');
+          t.setAttribute('x',p.x);
+          t.setAttribute('y',p.y);
+          t.setAttribute('text-anchor','middle');
+          t.setAttribute('dominant-baseline','central');
+          t.setAttribute('paint-order','stroke');
+          t.setAttribute('stroke','#fff');
+          t.setAttribute('stroke-width','2');
+          t.textContent = `${r}-${c}`;
+          gLabels.appendChild(t);
+        }
+      }
+      gridSvg.appendChild(gLabels);
+    }
+
+    // размерные линии
+    if(state.showDimH || state.showDimV){
+      const defs = document.createElementNS(SVG_NS,'defs');
+      const marker = document.createElementNS(SVG_NS,'marker');
+      marker.setAttribute('id','dimArrow');
+      marker.setAttribute('markerWidth','6');
+      marker.setAttribute('markerHeight','6');
+      marker.setAttribute('refX','3');
+      marker.setAttribute('refY','3');
+      marker.setAttribute('orient','auto');
+      const mPath = document.createElementNS(SVG_NS,'path');
+      mPath.setAttribute('d','M 0 0 L 6 3 L 0 6 z');
+      mPath.setAttribute('fill',state.color);
+      marker.appendChild(mPath);
+      defs.appendChild(marker);
+      gridSvg.appendChild(defs);
+
+      const gDim = document.createElementNS(SVG_NS,'g');
+      gDim.setAttribute('stroke',state.color);
+      gDim.setAttribute('stroke-width',state.stroke);
+      gDim.setAttribute('fill','none');
+      const fontSizeDim = Math.max(11, Math.round(Math.min(W,H)/30));
+      const centroid = {
+        x:(tl.x+tr.x+br.x+bl.x)/4,
+        y:(tl.y+tr.y+br.y+bl.y)/4
+      };
+      const offsetBase = 20;
+
+      // горизонтальный размер вдоль нижнего ребра (BL–BR)
+      if(state.showDimH){
+        const p1 = bl, p2 = br;
+        const e = {x:p2.x-p1.x, y:p2.y-p1.y};
+        const n0 = edgeNormal(p1,p2);
+        const mid = {x:(p1.x+p2.x)/2, y:(p1.y+p2.y)/2};
+        const toCent = {x:centroid.x-mid.x, y:centroid.y-mid.y};
+        const dot = n0.x*toCent.x + n0.y*toCent.y;
+        const n = dot>0 ? {x:-n0.x, y:-n0.y} : n0;
+        const off = offsetBase;
+        const s = {x:p1.x + n.x*off, y:p1.y + n.y*off};
+        const ePt = {x:p2.x + n.x*off, y:p2.y + n.y*off};
+
+        // выносные
+        const ext1 = document.createElementNS(SVG_NS,'line');
+        ext1.setAttribute('x1',p1.x);
+        ext1.setAttribute('y1',p1.y);
+        ext1.setAttribute('x2',p1.x + n.x*(off-4));
+        ext1.setAttribute('y2',p1.y + n.y*(off-4));
+        gDim.appendChild(ext1);
+        const ext2 = document.createElementNS(SVG_NS,'line');
+        ext2.setAttribute('x1',p2.x);
+        ext2.setAttribute('y1',p2.y);
+        ext2.setAttribute('x2',p2.x + n.x*(off-4));
+        ext2.setAttribute('y2',p2.y + n.y*(off-4));
+        gDim.appendChild(ext2);
+
+        const dimLine = document.createElementNS(SVG_NS,'line');
+        dimLine.setAttribute('x1',s.x);
+        dimLine.setAttribute('y1',s.y);
+        dimLine.setAttribute('x2',ePt.x);
+        dimLine.setAttribute('y2',ePt.y);
+        dimLine.setAttribute('marker-start','url(#dimArrow)');
+        dimLine.setAttribute('marker-end','url(#dimArrow)');
+        gDim.appendChild(dimLine);
+
+        const cx = (s.x+ePt.x)/2;
+        const cy = (s.y+ePt.y)/2;
+        let ang = Math.atan2(e.y,e.x)*180/Math.PI;
+        if(ang>90 || ang<-90) ang+=180;
+        const txt = document.createElementNS(SVG_NS,'text');
+        txt.setAttribute('font-family','ui-monospace, Menlo, Consolas, monospace');
+        txt.setAttribute('font-size',fontSizeDim);
+        txt.setAttribute('paint-order','stroke');
+        txt.setAttribute('stroke','#000');
+        txt.setAttribute('stroke-width','3');
+        txt.setAttribute('fill',state.color);
+        txt.setAttribute('text-anchor','middle');
+        txt.setAttribute('dominant-baseline','central');
+        txt.setAttribute('transform',`translate(${cx},${cy}) rotate(${ang})`);
+        txt.textContent = `${state.physW} мм`;
+        gDim.appendChild(txt);
+      }
+
+      // вертикальный размер вдоль левого ребра (TL–BL)
+      if(state.showDimV){
+        const p1 = tl, p2 = bl;
+        const e = {x:p2.x-p1.x, y:p2.y-p1.y};
+        const n0 = edgeNormal(p1,p2);
+        const mid = {x:(p1.x+p2.x)/2, y:(p1.y+p2.y)/2};
+        const toCent = {x:centroid.x-mid.x, y:centroid.y-mid.y};
+        const dot = n0.x*toCent.x + n0.y*toCent.y;
+        const n = dot>0 ? {x:-n0.x, y:-n0.y} : n0;
+        const off = offsetBase;
+        const s = {x:p1.x + n.x*off, y:p1.y + n.y*off};
+        const ePt = {x:p2.x + n.x*off, y:p2.y + n.y*off};
+
+        // выносные
+        const ext1 = document.createElementNS(SVG_NS,'line');
+        ext1.setAttribute('x1',p1.x);
+        ext1.setAttribute('y1',p1.y);
+        ext1.setAttribute('x2',p1.x + n.x*(off-4));
+        ext1.setAttribute('y2',p1.y + n.y*(off-4));
+        gDim.appendChild(ext1);
+        const ext2 = document.createElementNS(SVG_NS,'line');
+        ext2.setAttribute('x1',p2.x);
+        ext2.setAttribute('y1',p2.y);
+        ext2.setAttribute('x2',p2.x + n.x*(off-4));
+        ext2.setAttribute('y2',p2.y + n.y*(off-4));
+        gDim.appendChild(ext2);
+
+        const dimLine = document.createElementNS(SVG_NS,'line');
+        dimLine.setAttribute('x1',s.x);
+        dimLine.setAttribute('y1',s.y);
+        dimLine.setAttribute('x2',ePt.x);
+        dimLine.setAttribute('y2',ePt.y);
+        dimLine.setAttribute('marker-start','url(#dimArrow)');
+        dimLine.setAttribute('marker-end','url(#dimArrow)');
+        gDim.appendChild(dimLine);
+
+        const cx = (s.x+ePt.x)/2;
+        const cy = (s.y+ePt.y)/2;
+        let ang = Math.atan2(e.y,e.x)*180/Math.PI;
+        if(ang>90 || ang<-90) ang+=180;
+        const txt = document.createElementNS(SVG_NS,'text');
+        txt.setAttribute('font-family','ui-monospace, Menlo, Consolas, monospace');
+        txt.setAttribute('font-size',fontSizeDim);
+        txt.setAttribute('paint-order','stroke');
+        txt.setAttribute('stroke','#000');
+        txt.setAttribute('stroke-width','3');
+        txt.setAttribute('fill',state.color);
+        txt.setAttribute('text-anchor','middle');
+        txt.setAttribute('dominant-baseline','central');
+        txt.setAttribute('transform',`translate(${cx},${cy}) rotate(${ang})`);
+        txt.textContent = `${state.physH} мм`;
+        gDim.appendChild(txt);
+      }
+
+      gDim.setAttribute('opacity',state.opacity);
+      gridSvg.appendChild(gDim);
+    }
+
+    // контур и ручки
+    const gCtrl = document.createElementNS(SVG_NS,'g');
+
+    const poly = document.createElementNS(SVG_NS,'polygon');
+    poly.setAttribute('points', `${tl.x},${tl.y} ${tr.x},${tr.y} ${br.x},${br.y} ${bl.x},${bl.y}`);
+    poly.setAttribute('class','quad-outline');
+    poly.dataset.role = 'quad';
+    gCtrl.appendChild(poly);
+
+    const center = {
+      x:(tl.x+tr.x+br.x+bl.x)/4,
+      y:(tl.y+tr.y+br.y+bl.y)/4
+    };
+    const cHandle = document.createElementNS(SVG_NS,'circle');
+    cHandle.setAttribute('cx',center.x);
+    cHandle.setAttribute('cy',center.y);
+    cHandle.setAttribute('r',6);
+    cHandle.setAttribute('class','quad-center');
+    cHandle.dataset.role = 'center';
+    gCtrl.appendChild(cHandle);
+
+    [tl,tr,br,bl].forEach((p,i)=>{
+      const h = document.createElementNS(SVG_NS,'circle');
+      h.setAttribute('cx',p.x);
+      h.setAttribute('cy',p.y);
+      h.setAttribute('r',6);
+      h.setAttribute('class','handle');
+      h.dataset.handleIndex = String(i);
+      gCtrl.appendChild(h);
+    });
+
+    gridSvg.appendChild(gCtrl);
+
+    updateBadge();
+  }
+
+  // перетаскивание перспективных точек
+  let dragMode = null; // 'corner' | 'quad' | 'center' | null
+  let dragIndex = -1;
+  let dragStart = null;
+  let startCorners = null;
+
+  gridSvg.addEventListener('pointerdown', (e)=>{
+    const target = e.target;
+    dragMode = null;
+    dragIndex = -1;
+
+    if(target.dataset && target.dataset.handleIndex !== undefined){
+      dragMode = 'corner';
+      dragIndex = parseInt(target.dataset.handleIndex,10);
+    }else if(target.dataset && target.dataset.role === 'quad'){
+      dragMode = 'quad';
+    }else if(target.dataset && target.dataset.role === 'center'){
+      dragMode = 'center';
+    }else{
+      return;
+    }
+
+    dragStart = {x:e.clientX, y:e.clientY};
+    startCorners = state.corners.map(p=>({x:p.x,y:p.y}));
+    gridSvg.setPointerCapture(e.pointerId);
+    e.preventDefault();
+  });
+
+  gridSvg.addEventListener('pointermove', (e)=>{
+    if(!dragMode) return;
+    const dx = e.clientX - dragStart.x;
+    const dy = e.clientY - dragStart.y;
+
+    if(dragMode === 'corner' && dragIndex>=0){
+      state.corners[dragIndex].x = startCorners[dragIndex].x + dx;
+      state.corners[dragIndex].y = startCorners[dragIndex].y + dy;
+    }else if(dragMode === 'quad' || dragMode === 'center'){
+      for(let i=0;i<4;i++){
+        state.corners[i].x = startCorners[i].x + dx;
+        state.corners[i].y = startCorners[i].y + dy;
+      }
+    }
+    buildGrid();
+  });
+
+  function endDrag(e){
+    if(!dragMode) return;
+    dragMode = null;
+    dragIndex = -1;
+    dragStart = null;
+    startCorners = null;
+    try{ gridSvg.releasePointerCapture(e.pointerId); }catch(_){}
+  }
+  gridSvg.addEventListener('pointerup', endDrag);
+  gridSvg.addEventListener('pointercancel', endDrag);
+  gridSvg.addEventListener('pointerleave', (e)=>{ if(dragMode) endDrag(e); });
+
+  // Настройка контролов
+  colsEl.onchange = rowsEl.onchange = ()=>{
+    state.cols = Math.max(1, +colsEl.value||1);
+    state.rows = Math.max(1, +rowsEl.value||1);
+    buildGrid();
+  };
+  physWEl.onchange = physHEl.onchange = ()=>{
+    state.physW = Math.max(1, +physWEl.value||1);
+    state.physH = Math.max(1, +physHEl.value||1);
+    updateBadge();
+    buildGrid();
+  };
+  colorEl.oninput = ()=>{
+    state.color = colorEl.value;
+    buildGrid();
+  };
+  strokeEl.oninput = ()=>{
+    state.stroke = Math.max(1, +strokeEl.value||2);
+    buildGrid();
+  };
+  labelsEl.onchange = ()=>{
+    state.showLabels = labelsEl.checked;
+    buildGrid();
+  };
+  centerEl.onchange = ()=>{
+    state.showCenter = centerEl.checked;
+    buildGrid();
+  };
+  opacityEl.oninput = ()=>{
+    state.opacity = (+opacityEl.value)/100;
+    buildGrid();
+  };
+  dimHEl.onchange = ()=>{
+    state.showDimH = dimHEl.checked;
+    buildGrid();
+  };
+  dimVEl.onchange = ()=>{
+    state.showDimV = dimVEl.checked;
+    buildGrid();
+  };
+
+  fitBtn.onclick = ()=>{
+    resetCorners();
+  };
+
+  fileInput.addEventListener('change', (e)=>{
+    const file = e.target.files && e.target.files[0];
+    if(!file) return;
+    img.src = URL.createObjectURL(file);
+  });
+
+  // Экспорт PNG: фото + перспективная сетка
+  exportBtn.onclick = ()=>{
+    const W = state.svgW || stage.clientWidth || 800;
+    const H = state.svgH || stage.clientHeight || 600;
+    const canvas = document.createElement('canvas');
+    const scale = 2;
+    canvas.width = Math.round(W*scale);
+    canvas.height = Math.round(H*scale);
+    const ctx = canvas.getContext('2d');
+    ctx.scale(scale,scale);
+
+    // фон: фото, вписанное как в stage (object-fit: contain)
+    if(img && img.complete && img.naturalWidth){
+      const iw = img.naturalWidth, ih = img.naturalHeight;
+      const r = Math.min(W/iw, H/ih);
+      const dw = iw*r, dh = ih*r;
+      const dx = (W - dw)/2, dy = (H - dh)/2;
+      ctx.drawImage(img, dx, dy, dw, dh);
+    }else{
+      ctx.fillStyle = '#000';
+      ctx.fillRect(0,0,W,H);
+    }
+
+    const [tl,tr,br,bl] = state.corners;
+    ctx.globalAlpha = state.opacity;
+    ctx.lineWidth = state.stroke;
+    ctx.strokeStyle = state.color;
+
+    // сетка
+    for(let c=0;c<=state.cols;c++){
+      const u = c/state.cols;
+      const top = lerpPoint(tl,tr,u);
+      const bottom = lerpPoint(bl,br,u);
+      ctx.beginPath();
+      ctx.moveTo(top.x,top.y);
+      ctx.lineTo(bottom.x,bottom.y);
+      ctx.stroke();
+    }
+    for(let r=0;r<=state.rows;r++){
+      const v = r/state.rows;
+      const left = lerpPoint(tl,bl,v);
+      const right = lerpPoint(tr,br,v);
+      ctx.beginPath();
+      ctx.moveTo(left.x,left.y);
+      ctx.lineTo(right.x,right.y);
+      ctx.stroke();
+    }
+
+    // центральная линия
+    if(state.showCenter){
+      const u = 0.5;
+      const top = lerpPoint(tl,tr,u);
+      const bottom = lerpPoint(bl,br,u);
+      ctx.save();
+      ctx.setLineDash([8,6]);
+      ctx.lineWidth = state.stroke+0.5;
+      ctx.strokeStyle = '#ff6464';
+      ctx.beginPath();
+      ctx.moveTo(top.x,top.y);
+      ctx.lineTo(bottom.x,bottom.y);
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    // подписи
+    if(state.showLabels){
+      const fontSize = Math.max(10, Math.round(Math.min(W,H)/30));
+      ctx.save();
+      ctx.font = `${fontSize}px ui-monospace, Menlo, Consolas, monospace`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      for(let r=1;r<=state.rows;r++){
+        const v = (r-0.5)/state.rows;
+        for(let c=1;c<=state.cols;c++){
+          const u = (c-0.5)/state.cols;
+          const top = lerpPoint(tl,tr,u);
+          const bottom = lerpPoint(bl,br,u);
+          const p = lerpPoint(top,bottom,v);
+          const txt = `${r}-${c}`;
+          ctx.lineWidth = 3;
+          ctx.strokeStyle = '#fff';
+          ctx.fillStyle = '#000';
+          ctx.strokeText(txt,p.x,p.y);
+          ctx.fillText(txt,p.x,p.y);
+        }
+      }
+      ctx.restore();
+    }
+
+    // размерные (аналог SVG, без маркеров)
+    if(state.showDimH || state.showDimV){
+      const centroid = {
+        x:(tl.x+tr.x+br.x+bl.x)/4,
+        y:(tl.y+tr.y+br.y+bl.y)/4
+      };
+      const offsetBase = 20;
+      const fontSizeDim = Math.max(11, Math.round(Math.min(W,H)/30));
+      ctx.save();
+      ctx.lineWidth = state.stroke;
+      ctx.strokeStyle = state.color;
+      ctx.fillStyle = state.color;
+
+      // горизонтальный (BL–BR)
+      if(state.showDimH){
+        const p1 = bl, p2 = br;
+        const e = {x:p2.x-p1.x, y:p2.y-p1.y};
+        const n0 = edgeNormal(p1,p2);
+        const mid = {x:(p1.x+p2.x)/2, y:(p1.y+p2.y)/2};
+        const toCent = {x:centroid.x-mid.x, y:centroid.y-mid.y};
+        const dot = n0.x*toCent.x + n0.y*toCent.y;
+        const n = dot>0 ? {x:-n0.x, y:-n0.y} : n0;
+        const off = offsetBase;
+        const s = {x:p1.x + n.x*off, y:p1.y + n.y*off};
+        const ePt = {x:p2.x + n.x*off, y:p2.y + n.y*off};
+
+        // выносные
+        ctx.beginPath();
+        ctx.moveTo(p1.x,p1.y);
+        ctx.lineTo(p1.x + n.x*(off-4), p1.y + n.y*(off-4));
+        ctx.moveTo(p2.x,p2.y);
+        ctx.lineTo(p2.x + n.x*(off-4), p2.y + n.y*(off-4));
+        ctx.stroke();
+
+        // основная
+        ctx.beginPath();
+        ctx.moveTo(s.x,s.y);
+        ctx.lineTo(ePt.x,ePt.y);
+        ctx.stroke();
+
+        // стрелки
+        const arrow = 6;
+        const drawArrow = (pt,dirSign)=>{
+          const ux = e.x/Math.hypot(e.x,e.y||1);
+          const uy = e.y/Math.hypot(e.x,e.y||1);
+          const baseX = pt.x;
+          const baseY = pt.y;
+          const px = -uy, py = ux;
+          ctx.beginPath();
+          ctx.moveTo(baseX,baseY);
+          ctx.lineTo(baseX - ux*arrow*dirSign + px*arrow*0.5,
+                     baseY - uy*arrow*dirSign + py*arrow*0.5);
+          ctx.lineTo(baseX - ux*arrow*dirSign - px*arrow*0.5,
+                     baseY - uy*arrow*dirSign - py*arrow*0.5);
+          ctx.closePath();
+          ctx.fill();
+        };
+        drawArrow(s,1);
+        drawArrow(ePt,-1);
+
+        // текст
+        const cx = (s.x+ePt.x)/2;
+        const cy = (s.y+ePt.y)/2;
+        let ang = Math.atan2(e.y,e.x);
+        if(ang>Math.PI/2 || ang<-Math.PI/2) ang+=Math.PI;
+        ctx.save();
+        ctx.translate(cx,cy);
+        ctx.rotate(ang);
+        const label = `${state.physW} мм`;
+        ctx.font = `${fontSizeDim}px ui-monospace, Menlo, Consolas, monospace`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = '#000';
+        ctx.strokeText(label,0,0);
+        ctx.fillStyle = state.color;
+        ctx.fillText(label,0,0);
+        ctx.restore();
+      }
+
+      // вертикальный (TL–BL)
+      if(state.showDimV){
+        const p1 = tl, p2 = bl;
+        const e = {x:p2.x-p1.x, y:p2.y-p1.y};
+        const n0 = edgeNormal(p1,p2);
+        const mid = {x:(p1.x+p2.x)/2, y:(p1.y+p2.y)/2};
+        const toCent = {x:centroid.x-mid.x, y:centroid.y-mid.y};
+        const dot = n0.x*toCent.x + n0.y*toCent.y;
+        const n = dot>0 ? {x:-n0.x, y:-n0.y} : n0;
+        const off = offsetBase;
+        const s = {x:p1.x + n.x*off, y:p1.y + n.y*off};
+        const ePt = {x:p2.x + n.x*off, y:p2.y + n.y*off};
+
+        // выносные
+        ctx.beginPath();
+        ctx.moveTo(p1.x,p1.y);
+        ctx.lineTo(p1.x + n.x*(off-4), p1.y + n.y*(off-4));
+        ctx.moveTo(p2.x,p2.y);
+        ctx.lineTo(p2.x + n.x*(off-4), p2.y + n.y*(off-4));
+        ctx.stroke();
+
+        // основная
+        ctx.beginPath();
+        ctx.moveTo(s.x,s.y);
+        ctx.lineTo(ePt.x,ePt.y);
+        ctx.stroke();
+
+        const arrow = 6;
+        const len = Math.hypot(e.x,e.y)||1;
+        const ux = e.x/len, uy = e.y/len;
+        const px = -uy, py = ux;
+        const drawArrow2 = (pt,dirSign)=>{
+          ctx.beginPath();
+          ctx.moveTo(pt.x,pt.y);
+          ctx.lineTo(pt.x - ux*arrow*dirSign + px*arrow*0.5,
+                     pt.y - uy*arrow*dirSign + py*arrow*0.5);
+          ctx.lineTo(pt.x - ux*arrow*dirSign - px*arrow*0.5,
+                     pt.y - uy*arrow*dirSign - py*arrow*0.5);
+          ctx.closePath();
+          ctx.fill();
+        };
+        drawArrow2(s,1);
+        drawArrow2(ePt,-1);
+
+        // текст
+        const cx = (s.x+ePt.x)/2;
+        const cy = (s.y+ePt.y)/2;
+        let ang = Math.atan2(e.y,e.x);
+        if(ang>Math.PI/2 || ang<-Math.PI/2) ang+=Math.PI;
+        ctx.save();
+        ctx.translate(cx,cy);
+        ctx.rotate(ang);
+        const label = `${state.physH} мм`;
+        ctx.font = `${fontSizeDim}px ui-monospace, Menlo, Consolas, monospace`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = '#000';
+        ctx.strokeText(label,0,0);
+        ctx.fillStyle = state.color;
+        ctx.fillText(label,0,0);
+        ctx.restore();
+      }
+
+      ctx.restore();
+    }
+
+    const a = document.createElement('a');
+    a.download = 'grid_overlay_perspective.png';
+    a.href = canvas.toDataURL('image/png');
+    a.click();
+  };
+
+  // Инициализация
+  initSvgSize();
+  buildGrid();
+  updateBadge();
+  window.addEventListener('resize', ()=>{
+    initSvgSize();
+    buildGrid();
+  });
+})();
+</script>
+</body>
+</html>
